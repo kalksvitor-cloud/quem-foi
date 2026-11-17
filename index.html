@@ -728,6 +728,9 @@ try { store = JSON.parse(localStorage.getItem("quem-foi-serie")||"{}"); } catch(
 store.done ||= {}; store.state ||= {}; store.tab ||= "F";
 const save = () => { try { localStorage.setItem("quem-foi-serie", JSON.stringify(store)); } catch(e){} };
 const key = c => "T"+c.temp+"C"+c.cap;
+const sig = c => { let h=0; const t=JSON.stringify([c.room,c.obj]); for(let i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))|0; return h; };
+const AFF=["T0C0","T0C2","T0C5","T0C8","T1C0","T1C1","T1C2","T1C3","T1C5","T1C6","T1C7","T1C8","T2C1","T2C4","T2C5","T2C6","T3C0","T3C2","T3C3","T3C6","T3C7","T4C0","T4C1","T4C2","T4C3","T4C5","T4C6","T4C7","T4C8"];
+for(const c of CASES){ const st=store.state&&store.state[key(c)]; if(st && (st.sig===undefined ? AFF.includes(key(c)) : st.sig!==sig(c))) delete store.state[key(c)]; }
 const idxOf = (t,c) => CASES.findIndex(x=>x.temp===t&&x.cap===c);
 const seasonDone = t => CASES.filter(c=>c.temp===t&&store.done[key(c)]).length;
 const unlockedSeason = t => t===0 || seasonDone(t-1)===10;
@@ -767,7 +770,7 @@ function openStory(){
   $("mStory").classList.add("on");
 }
 const chipHTML = p => `<span class="chip"><span class="dot" style="background:${p.c}">${p.svg}</span><span class="nm">${p.full}</span>${p.victim?'<span class="tag">vítima</span>':''}</span>`;
-function persist(){ store.state[key(L)]={place,marks,notes,struck,hints,secs}; save(); }
+function persist(){ store.state[key(L)]={place,marks,notes,struck,hints,secs,sig:sig(L)}; save(); }
 const fmt = t => String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0");
 function showTime(){ $("timer").textContent=fmt(secs); }
 function snap(){ hist.push(JSON.stringify({place,marks,notes})); if(hist.length>200) hist.shift(); }
