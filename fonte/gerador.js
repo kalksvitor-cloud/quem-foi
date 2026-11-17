@@ -37,7 +37,7 @@ function truth(L,cl,P){
     case 'notin': return R(cl.p)!==cl.r;
     case 'chair': return obj[P[cl.p][0]][P[cl.p][1]]==='cadeira';
     case 'chairin': return obj[P[cl.p][0]][P[cl.p][1]]==='cadeira' && R(cl.p)===cl.r;
-    case 'adj': return DIRS.some(([a,b])=>{const r=P[cl.p][0]+a,c=P[cl.p][1]+b;return r>=0&&c>=0&&r<n&&c<n&&obj[r][c]===cl.o;});
+    case 'adj': return DIRS.some(([a,b])=>{const r=P[cl.p][0]+a,c=P[cl.p][1]+b;return r>=0&&c>=0&&r<n&&c<n&&obj[r][c]===cl.o&&room[r][c]===room[P[cl.p][0]][P[cl.p][1]];});
     case 'edge': {const [r,c]=P[cl.p];return r===0||c===0||r===n-1||c===n-1;}
     case 'same': return R(cl.p)===R(cl.q);
     case 'diff': return R(cl.p)!==R(cl.q);

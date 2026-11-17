@@ -247,6 +247,7 @@ h3.sec{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--m
   <ul>
     <li>Cada <b>linha</b> e cada <b>coluna</b> tem exatamente <b>uma pessoa</b>.</li>
     <li>Ninguém fica sobre planta, estante, piano ou mesa. Na cadeira pode, e a pessoa fica sentada.</li>
+    <li>“Ao lado de” um objeto quer dizer na casa vizinha (em cima, embaixo, à esquerda ou à direita) <b>e no mesmo cômodo</b>. Parede separa: um objeto do outro lado da parede não conta.</li>
     <li>O desenho muda com o cenário: vaso, arbusto, árvore, cacto e palmeira são <b>plantas</b>; estantes podem guardar livros, vinhos, potes ou caixas; mesas podem ser redondas, escrivaninhas ou bancadas; poltronas, banquinhos, bancos e espreguiçadeiras contam como <b>cadeira</b>. Tapetes são só decoração.</li>
     <li>“Ao lado de” é vizinho na horizontal ou vertical, nunca na diagonal.</li>
     <li>“Mais à esquerda” e “mais acima” valem para qualquer distância.</li>
@@ -425,7 +426,7 @@ function clueBad(c){
     case "notin": return R(c.p)===c.r;
     case "chair": return L.obj[pr][pc]!=="cadeira";
     case "chairin": return L.obj[pr][pc]!=="cadeira"||R(c.p)!==c.r;
-    case "adj": return ![[0,1],[1,0],[0,-1],[-1,0]].some(([a,b])=>L.obj[pr+a]?.[pc+b]===c.o);
+    case "adj": return ![[0,1],[1,0],[0,-1],[-1,0]].some(([a,b])=>L.obj[pr+a]?.[pc+b]===c.o&&L.room[pr+a][pc+b]===L.room[pr][pc]);
     case "edge": return !(pr===0||pc===0||pr===L.n-1||pc===L.n-1);
     case "same": return R(c.p)!==R(c.q);
     case "diff": return R(c.p)===R(c.q);

@@ -7,7 +7,7 @@ function check(lv){
   const ok1=(c,pr,pc)=>{ switch(c.t){
     case "in": return rm(pr,pc)===c.r; case "notin": return rm(pr,pc)!==c.r;
     case "chair": return lv.obj[pr][pc]==="cadeira"; case "chairin": return lv.obj[pr][pc]==="cadeira"&&rm(pr,pc)===c.r;
-    case "adj": return [[0,1],[1,0],[0,-1],[-1,0]].some(([a,b])=>lv.obj[pr+a]?.[pc+b]===c.o);
+    case "adj": return [[0,1],[1,0],[0,-1],[-1,0]].some(([a,b])=>lv.obj[pr+a]?.[pc+b]===c.o&&lv.room[pr+a][pc+b]===lv.room[pr][pc]);
     case "edge": return pr===0||pc===0||pr===n-1||pc===n-1; } return true; };
   const empt=new Set(lv.clues.filter(c=>c.t==="empty").map(c=>c.r));
   // domínio unário de cada pessoa
