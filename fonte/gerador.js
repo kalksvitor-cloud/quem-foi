@@ -1,11 +1,14 @@
 // Gerador de fases para "Quem Foi?": cria mapa, solução e pistas, e garante solução única
 // com um resolvedor por domínios (MRV + checagem adiante).
 let seed = 12345;
-function rnd(){ seed = (seed*1103515245+12345) & 0x7fffffff; return seed/0x7fffffff; }
+function rnd(){ seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
 const ri = n => Math.floor(rnd()*n);
 const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=ri(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; };
-const BLOCK = ['planta','estante','piano','mesa'];
-const isBlock = o => BLOCK.includes(o);
+const K = require('./moveis.js').KIND;
+const BLOCK = Object.keys(K).filter(k=>!K[k].sit);
+const SIT = Object.keys(K).filter(k=>K[k].sit);
+const isBlock = o => !!o && !!K[o] && !K[o].sit;
+const isSit = o => !!o && !!K[o] && !!K[o].sit;
 const DIRS=[[1,0],[-1,0],[0,1],[0,-1]];
 
 function makeMap(n, k){
@@ -35,8 +38,8 @@ function truth(L,cl,P){
   switch(cl.t){
     case 'in': return R(cl.p)===cl.r;
     case 'notin': return R(cl.p)!==cl.r;
-    case 'chair': return obj[P[cl.p][0]][P[cl.p][1]]==='cadeira';
-    case 'chairin': return obj[P[cl.p][0]][P[cl.p][1]]==='cadeira' && R(cl.p)===cl.r;
+    case 'chair': return obj[P[cl.p][0]][P[cl.p][1]]===cl.o;
+    case 'chairin': return obj[P[cl.p][0]][P[cl.p][1]]===cl.o && R(cl.p)===cl.r;
     case 'adj': return DIRS.some(([a,b])=>{const r=P[cl.p][0]+a,c=P[cl.p][1]+b;return r>=0&&c>=0&&r<n&&c<n&&obj[r][c]===cl.o&&room[r][c]===room[P[cl.p][0]][P[cl.p][1]];});
     case 'edge': {const [r,c]=P[cl.p];return r===0||c===0||r===n-1||c===n-1;}
     case 'same': return R(cl.p)===R(cl.q);
@@ -107,12 +110,14 @@ function candidates(L){
   for(let p=0;p<n;p++){
     C.push({t:'in',p,r:R(p),w:'direct'});
     for(let r=0;r<k;r++) if(r!==R(p)) C.push({t:'notin',p,r,w:'neg'});
-    if(obj[pos[p][0]][pos[p][1]]==='cadeira'){ C.push({t:'chair',p,w:'obj'}); C.push({t:'chairin',p,r:R(p),w:'obj'}); }
-    for(const o of [...BLOCK,'cadeira']) if(truth(L,{t:'adj',p,o},pos)) C.push({t:'adj',p,o,w:'obj'});
+    const here=obj[pos[p][0]][pos[p][1]];
+    if(isSit(here)){ C.push({t:'chair',p,o:here,w:'obj'}); C.push({t:'chairin',p,o:here,r:R(p),w:'obj'}); }
+    const kinds=[...new Set(obj.flat().filter(Boolean))];
+    for(const o of kinds) if(truth(L,{t:'adj',p,o},pos)) C.push({t:'adj',p,o,w:'obj'});
     if(truth(L,{t:'edge',p},pos)) C.push({t:'edge',p,w:'weak'});
     if(p>0 && pos.filter((_,q)=>R(q)===R(p)).length===1) C.push({t:'alone',p,w:'glob'});
     for(let q=0;q<n;q++){ if(q===p) continue;
-      if(q>p){ if(R(p)===R(q)) C.push({t:'same',p,q,w:'rel'}); else C.push({t:'diff',p,q,w:'weak'}); }
+      if(q>p){ if(R(p)===R(q)) C.push({t:'same',p,q,w:'pair'}); else C.push({t:'diff',p,q,w:'weak'}); }
       if(pos[p][1]<pos[q][1]) C.push({t:'west',p,q,w:'rel'});
       if(pos[p][0]<pos[q][0]) C.push({t:'north',p,q,w:'rel'});
     }
@@ -124,6 +129,7 @@ function pickClues(L,cfg){
   const C=candidates(L), W=cfg.weights;
   let keyed=C.map(c=>({c,key:Math.pow(rnd(),1/(W[c.w]||0.01))})).sort((a,b)=>b.key-a.key).map(x=>x.c);
   let din=0; keyed=keyed.filter(c=>c.t!=='in' || din++<cfg.maxDirect);
+  let nrel=0; keyed=keyed.filter(c=>c.w!=='rel' || nrel++<cfg.maxRel);
   const uniq = cl => countSolutions(L,cl).cnt===1;
   // primeiro: uma pista "de objeto" por pessoa quando existir (pistas que se encadeiam pelo mapa)
   const chosen=[];
@@ -148,9 +154,11 @@ function build(cfg){
     const cells=[];for(let r=0;r<n;r++)for(let c=0;c<n;c++)cells.push([r,c]);
     shuffle(cells);
     // móveis raros: tipos com 1 a poucos exemplares
-    const types=shuffle(BLOCK.slice()); let i=0;
-    for(let b=0;b<nb;b++){const [r,c]=cells[i++]; obj[r][c]=types[b<types.length?b:ri(types.length)];}
-    for(let b=0;b<nch;b++){const [r,c]=cells[i++];obj[r][c]='cadeira';}
+    const CATS=['planta','estante','mesa','planta','estante','mesa','piano'];
+    const pickK=(cat,r,c)=>{ const ks=cfg.kindsFor(cat,room[r][c]); return ks[ri(ks.length)]; };
+    const types=shuffle(['planta','estante','piano','mesa']); let i=0;
+    for(let b=0;b<nb;b++){const [r,c]=cells[i++]; obj[r][c]=pickK(b<types.length?types[b]:CATS[ri(CATS.length)],r,c);}
+    for(let b=0;b<nch;b++){const [r,c]=cells[i++];obj[r][c]=pickK('cadeira',r,c);}
     const perm=shuffle([...Array(n).keys()]);
     if(perm.some((c,r)=>isBlock(obj[r][c]))) continue;
     const pos=shuffle(perm.map((c,r)=>[r,c]));
@@ -164,4 +172,4 @@ function build(cfg){
   }
   throw 'falhou';
 }
-module.exports={build,countSolutions,truth,candidates,setSeed:s=>{seed=s},rnd,shuffle,BLOCK};
+module.exports={build,countSolutions,truth,candidates,setSeed:s=>{seed=s},rnd,shuffle,BLOCK,SIT,isBlock,isSit};

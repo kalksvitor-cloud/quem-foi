@@ -185,7 +185,36 @@ const MOVEIS = (() => {
     "Casarão":{cadeira:"poltrona"}, "Celeiro":{estante:"caixas",mesa:"bancada",cadeira:"banquinho"}, "Curral":{planta:"arbusto",cadeira:"banco",estante:"caixas"},
     "Pomar":{planta:"arvore",cadeira:"banco"}, "Moinho":{estante:"caixas",mesa:"bancada"}, "Alambique":{estante:"vinhos",mesa:"bancada"}
   };
+  // Tipos específicos de objeto (cada um tem nome próprio nas pistas).
+  // cat: categoria; sit: dá pra sentar; n: nome com artigo; svg: desenho.
+  const KIND = {
+    cadeira:{cat:"cadeira",sit:1,n:"uma cadeira",svg:V.cadeira.cadeira},
+    poltrona:{cat:"cadeira",sit:1,n:"uma poltrona",svg:V.cadeira.poltrona},
+    banquinho:{cat:"cadeira",sit:1,n:"um banquinho",svg:V.cadeira.banquinho},
+    banco:{cat:"cadeira",sit:1,n:"um banco",svg:V.cadeira.banco},
+    espreguicadeira:{cat:"cadeira",sit:1,n:"uma espreguiçadeira",svg:V.cadeira.espreguicadeira},
+    vaso:{cat:"planta",n:"um vaso de planta",svg:V.planta.vaso},
+    arbusto:{cat:"planta",n:"um arbusto",svg:V.planta.arbusto},
+    arvore:{cat:"planta",n:"uma árvore",svg:V.planta.arvore},
+    cacto:{cat:"planta",n:"um cacto",svg:V.planta.cacto},
+    palmeira:{cat:"planta",n:"uma palmeira",svg:V.planta.palmeira},
+    estante:{cat:"estante",n:"uma estante de livros",svg:V.estante.livros},
+    vinhos:{cat:"estante",n:"uma prateleira de vinhos",svg:V.estante.vinhos},
+    potes:{cat:"estante",n:"uma prateleira de potes",svg:V.estante.potes},
+    caixas:{cat:"estante",n:"uma prateleira de caixas",svg:V.estante.caixas},
+    piano:{cat:"piano",n:"um piano",svg:V.piano.piano},
+    mesa:{cat:"mesa",n:"uma mesa",svg:V.mesa.madeira},
+    redonda:{cat:"mesa",n:"uma mesa redonda",svg:V.mesa.redonda},
+    escrivaninha:{cat:"mesa",n:"uma escrivaninha",svg:V.mesa.escrivaninha},
+    bancada:{cat:"mesa",n:"uma bancada",svg:V.mesa.bancada}
+  };
+  // nome da variação de desenho -> tipo
+  const VK = {vaso:"vaso",arbusto:"arbusto",arvore:"arvore",cacto:"cacto",palmeira:"palmeira",livros:"estante",vinhos:"vinhos",potes:"potes",caixas:"caixas",piano:"piano",
+    madeira:"mesa",redonda:"redonda",bancada:"bancada",escrivaninha:"escrivaninha",cadeira:"cadeira",poltrona:"poltrona",poltronaAzul:"poltrona",poltronaVerde:"poltrona",banquinho:"banquinho",espreguicadeira:"espreguicadeira",banco:"banco"};
+  const BASEK = {planta:"vaso",estante:"estante",piano:"piano",mesa:"mesa",cadeira:"cadeira"};
+  // tipos possíveis de uma categoria num cômodo: o típico do cômodo (mais provável) e o básico
+  const kindsFor = (cat, room) => { const v = ROOM[room] && ROOM[room][cat]; const a = v ? VK[v] : BASEK[cat]; return a===BASEK[cat] ? [a] : [a, a, BASEK[cat]]; };
   const forRoom = (o, room) => { const v = ROOM[room] && ROOM[room][o]; return (v && V[o][v]) || BASE[o]; };
-  return { ...BASE, V, ROOM, forRoom };
+  return { ...BASE, V, ROOM, forRoom, KIND, kindsFor };
 })();
 if (typeof module !== "undefined") module.exports = MOVEIS;

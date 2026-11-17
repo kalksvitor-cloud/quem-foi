@@ -246,10 +246,9 @@ h3.sec{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--m
   <p>Cada caso traz a planta de um lugar, as pessoas que estavam lá e alguns depoimentos. Descubra onde cada uma estava.</p>
   <ul>
     <li>Cada <b>linha</b> e cada <b>coluna</b> tem exatamente <b>uma pessoa</b>.</li>
-    <li>Ninguém fica sobre planta, estante, piano ou mesa. Na cadeira pode, e a pessoa fica sentada.</li>
-    <li>“Ao lado de” um objeto quer dizer na casa vizinha (em cima, embaixo, à esquerda ou à direita) <b>e no mesmo cômodo</b>. Parede separa: um objeto do outro lado da parede não conta.</li>
-    <li>O desenho muda com o cenário: vaso, arbusto, árvore, cacto e palmeira são <b>plantas</b>; estantes podem guardar livros, vinhos, potes ou caixas; mesas podem ser redondas, escrivaninhas ou bancadas; poltronas, banquinhos, bancos e espreguiçadeiras contam como <b>cadeira</b>. Tapetes são só decoração.</li>
-    <li>“Ao lado de” é vizinho na horizontal ou vertical, nunca na diagonal.</li>
+    <li>Ninguém fica sobre plantas (vaso, arbusto, árvore, cacto, palmeira), estantes e prateleiras, piano ou mesas. Dá pra ficar em cadeira, poltrona, banquinho, banco e espreguiçadeira, e a pessoa fica sentada.</li>
+    <li>Cada móvel tem o seu nome: se a pista fala em <b>poltrona</b>, é poltrona, não cadeira.</li>
+    <li>“Ao lado de” é a casa vizinha na horizontal ou vertical (nunca na diagonal) <b>e no mesmo cômodo</b>. Parede separa: um objeto do outro lado da parede não conta.</li>
     <li>“Mais à esquerda” e “mais acima” valem para qualquer distância.</li>
     <li>As linhas grossas são as paredes dos cômodos. A “parede externa” é a borda da planta.</li>
     <li>O <b>culpado</b> é a <b>única</b> pessoa que estava no mesmo cômodo que a vítima. Isso também é uma pista!</li>
@@ -294,12 +293,15 @@ const DIFF = {F:"Fácil", M:"Médio", D:"Difícil"};
 const SET = {"Solar Montenegro":["🏰","#efe7ff"],"Expresso Aurora":["🚂","#e0f2ff"],"Navio Estrela do Sul":["🚢","#dcf7f3"],"Teatro Imperial":["🎭","#ffe4ec"],"Hotel Miramar":["🏨","#fff1d6"],"Museu de Curiosidades":["🏛️","#ecebe6"],"Circo Girassol":["🎪","#ffe8dc"],"Fazenda Boa Vista":["🌾","#e7f6dc"]};
 const PCOL = ["#ff6b6b","#4c9ffe","#20b97a","#f59f00","#9775fa","#f76707","#0ca5b0","#e64980","#74b816","#1c7ed6","#ae3ec9"];
 const RCOL = ["#ffd9d9","#d3e8ff","#d5f2cf","#fff0b8","#e6ddff","#ffdcc4","#c8eef3","#fbd5ec"];
-const OBJ = {planta:"🪴",estante:"📚",piano:"🎹",cadeira:"🪑"};
-const OBJN = {planta:"uma planta",estante:"uma estante",piano:"um piano",mesa:"uma mesa",cadeira:"uma cadeira"};
-const BLOCK = new Set(["planta","estante","piano","mesa"]);
 const $ = id => document.getElementById(id);
 __AVATAR__
 __CENAS__
+const KIND = SCENE.FURN.KIND;
+const OBJN = Object.fromEntries(Object.entries(KIND).map(([k,v])=>[k,v.n]));
+const BLOCK = new Set(Object.keys(KIND).filter(k=>!KIND[k].sit));
+const SITK = new Set(Object.keys(KIND).filter(k=>KIND[k].sit));
+const ico = o => `<span class="fav" style="border-radius:0">${KIND[o].svg}</span>`;
+const num = o => OBJN[o].replace(/^uma /,"numa ").replace(/^um /,"num ");
 const face = (p) => AV.svg(p.full, p.g, p.c, p.victim);
 
 let store = {};
@@ -309,7 +311,7 @@ const save = () => { try { localStorage.setItem("quem-foi-serie", JSON.stringify
 const key = c => "T"+c.temp+"C"+c.cap;
 const sig = c => { let h=0; const t=JSON.stringify([c.room,c.obj]); for(let i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))|0; return h; };
 const AFF=["T0C0","T0C2","T0C5","T0C8","T1C0","T1C1","T1C2","T1C3","T1C5","T1C6","T1C7","T1C8","T2C1","T2C4","T2C5","T2C6","T3C0","T3C2","T3C3","T3C6","T3C7","T4C0","T4C1","T4C2","T4C3","T4C5","T4C6","T4C7","T4C8"];
-for(const c of CASES){ const st=store.state&&store.state[key(c)]; if(st && (st.sig===undefined ? AFF.includes(key(c)) : st.sig!==sig(c))) delete store.state[key(c)]; }
+for(const c of CASES){ const st=store.state&&store.state[key(c)]; if(st && st.sig!==sig(c)) delete store.state[key(c)]; }
 const idxOf = (t,c) => CASES.findIndex(x=>x.temp===t&&x.cap===c);
 const seasonDone = t => CASES.filter(c=>c.temp===t&&store.done[key(c)]).length;
 const unlockedSeason = t => t===0 || seasonDone(t-1)===10;
@@ -361,9 +363,9 @@ function clueText(c){
   switch(c.t){
     case "in": return `${pn(c.p)} estava ${rn(c.r)}.`;
     case "notin": return `${pn(c.p)} não estava ${rn(c.r)}.`;
-    case "chair": return `${pn(c.p)} estava ${g(c.p,"sentado","sentada")} numa cadeira <span class="fav" style="border-radius:0">${SCENE.FURN.cadeira}</span>.`;
-    case "adj": return `${pn(c.p)} estava ao lado de ${OBJN[c.o]} <span class="fav" style="border-radius:0">${SCENE.FURN[c.o]}</span>.`;
-    case "chairin": return `${pn(c.p)} estava ${g(c.p,"sentado","sentada")} numa cadeira <span class="fav" style="border-radius:0">${SCENE.FURN.cadeira}</span> ${rn(c.r)}.`;
+    case "chair": return `${pn(c.p)} estava ${g(c.p,"sentado","sentada")} ${num(c.o)} ${ico(c.o)}.`;
+    case "adj": return `${pn(c.p)} estava ao lado de ${OBJN[c.o]} ${ico(c.o)}.`;
+    case "chairin": return `${pn(c.p)} estava ${g(c.p,"sentado","sentada")} ${num(c.o)} ${ico(c.o)} ${rn(c.r)}.`;
     case "edge": return `${pn(c.p)} estava ${g(c.p,"encostado","encostada")} numa parede externa.`;
     case "same": return `${pn(c.p)} e ${pn(c.q)} estavam no mesmo cômodo.`;
     case "diff": return `${pn(c.p)} e ${pn(c.q)} estavam em cômodos diferentes.`;
@@ -374,15 +376,16 @@ function clueText(c){
   }
 }
 const subj = p => P[p].victim ? `${P[p].g==="f"?"Ela":"Ele"} (a vítima)` : (P[p].g==="f"?"Ela":"Ele");
-const ob = (o) => `<b>${OBJN[o].split(" ")[1]}</b> <span class="fav" style="border-radius:0">${SCENE.FURN[o]}</span>`;
+const ob = (o) => { const w=OBJN[o].split(" "); return `${w[0]} <b>${w.slice(1).join(" ")}</b> ${ico(o)}`; };
+const obn = (o) => { const w=num(o).split(" "); return `${w[0]} <b>${w.slice(1).join(" ")}</b> ${ico(o)}`; };
 function clueFor(c,p){
   const S=subj(p), o=c.p===p?c.q:c.p;
   switch(c.t){
     case "in": return `${S} estava ${rn(c.r)}.`;
     case "notin": return `${S} não estava ${rn(c.r)}.`;
-    case "chair": return `${S} estava ${g(p,"sentado","sentada")} numa ${ob("cadeira")}.`;
-    case "chairin": return `${S} estava ${g(p,"sentado","sentada")} numa ${ob("cadeira")} ${rn(c.r)}.`;
-    case "adj": return `${S} estava ao lado de ${OBJN[c.o].split(" ")[0]} ${ob(c.o)}.`;
+    case "chair": return `${S} estava ${g(p,"sentado","sentada")} ${obn(c.o)}.`;
+    case "chairin": return `${S} estava ${g(p,"sentado","sentada")} ${obn(c.o)} ${rn(c.r)}.`;
+    case "adj": return `${S} estava ao lado de ${ob(c.o)}.`;
     case "edge": return `${S} estava ${g(p,"encostado","encostada")} numa parede externa.`;
     case "same": return `${S} estava no mesmo cômodo que ${pn(o)}.`;
     case "diff": return `${S} não estava no mesmo cômodo que ${pn(o)}.`;
@@ -427,8 +430,8 @@ function clueBad(c){
   switch(c.t){
     case "in": return R(c.p)!==c.r;
     case "notin": return R(c.p)===c.r;
-    case "chair": return L.obj[pr][pc]!=="cadeira";
-    case "chairin": return L.obj[pr][pc]!=="cadeira"||R(c.p)!==c.r;
+    case "chair": return L.obj[pr][pc]!==c.o;
+    case "chairin": return L.obj[pr][pc]!==c.o||R(c.p)!==c.r;
     case "adj": return ![[0,1],[1,0],[0,-1],[-1,0]].some(([a,b])=>L.obj[pr+a]?.[pc+b]===c.o&&L.room[pr+a][pc+b]===L.room[pr][pc]);
     case "edge": return !(pr===0||pc===0||pr===L.n-1||pc===L.n-1);
     case "same": return R(c.p)!==R(c.q);
@@ -483,9 +486,9 @@ function render(){
     let h="";
     const lb=lab[rm]; if(lb.r===r&&lb.c===c){ h+= lb.v ? `<div class="lbl vert" style="height:calc(${lb.v*100}% - 10px)">${L.rooms[rm][0]}</div>` : `<div class="lbl${lb.run>1?" one":""}" style="max-width:calc(${lb.run*100}% - 6px)">${L.rooms[rm][0]}</div>`; }
     const o=L.obj[r][c];
-    if(BLOCK.has(o)) h+=`<div class="furn">${SCENE.FURN.forRoom(o,L.rooms[rm][0])}</div>`;
+    if(BLOCK.has(o)) h+=`<div class="furn">${KIND[o].svg}</div>`;
     const p=who[r+","+c];
-    if(o==="cadeira") h+=`<div class="furn chair" style="position:absolute;inset:0;margin:auto">${SCENE.FURN.forRoom("cadeira",L.rooms[rm][0])}</div>`;
+    if(SITK.has(o)) h+=`<div class="furn chair" style="position:absolute;inset:0;margin:auto">${KIND[o].svg}</div>`;
     if(p!==undefined){ cls.push("hasp"); if(bad.has(p)) cls.push("bad");
       h+=`<div class="av${P[p].victim?" vic":""}" style="background:${P[p].c}">${P[p].svg}</div>`; }
     else if(marks[r+","+c]) h+=`<span class="x">✕</span>`;
@@ -513,7 +516,7 @@ function status(msg,err){
 function tap(r,c){
   const k=r+","+c, o=L.obj[r][c];
   const occ=place.findIndex(x=>x&&x[0]===r&&x[1]===c);
-  if(BLOCK.has(o)){ if(mode==="place") status(`Ninguém pode ficar sobre ${OBJN[o].replace("uma ","a ").replace("um ","o ")}.`,true); return; }
+  if(BLOCK.has(o)){ if(mode==="place") status(`Ninguém pode ficar sobre ${OBJN[o].replace(/^uma /,"a ").replace(/^um /,"o ")}.`,true); return; }
   snap();
   if(mode==="mark"){ if(occ>=0) return; if(marks[k]) delete marks[k]; else marks[k]=1; }
   else if(mode==="erase"){ if(occ>=0) place[occ]=null; delete marks[k]; delete notes[k]; }

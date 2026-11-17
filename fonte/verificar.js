@@ -1,12 +1,13 @@
 // Verificador independente (não usa o gerador): busca linha a linha e conta TODAS as soluções (até 2).
-const L = require("./niveis.json");
-const BL=new Set(["planta","estante","piano","mesa"]);
+const L = process.env.CACHE ? [...Array(50).keys()].filter(i=>require("fs").existsSync(__dirname+"/cache/"+i+".json")).map(i=>Object.assign(require("./cache/"+i+".json"),{ix:i})) : require("./niveis.json");
+// móveis onde não se pode ficar (lista escrita à mão, sem usar o gerador)
+const BL=new Set(["vaso","arbusto","arvore","cacto","palmeira","estante","vinhos","potes","caixas","piano","mesa","redonda","escrivaninha","bancada"]);
 let allOk=true;
 function check(lv){
   const n=lv.n, rm=(r,c)=>lv.room[r][c];
   const ok1=(c,pr,pc)=>{ switch(c.t){
     case "in": return rm(pr,pc)===c.r; case "notin": return rm(pr,pc)!==c.r;
-    case "chair": return lv.obj[pr][pc]==="cadeira"; case "chairin": return lv.obj[pr][pc]==="cadeira"&&rm(pr,pc)===c.r;
+    case "chair": return lv.obj[pr][pc]===c.o; case "chairin": return lv.obj[pr][pc]===c.o&&rm(pr,pc)===c.r;
     case "adj": return [[0,1],[1,0],[0,-1],[-1,0]].some(([a,b])=>lv.obj[pr+a]?.[pc+b]===c.o&&lv.room[pr+a][pc+b]===lv.room[pr][pc]);
     case "edge": return pr===0||pc===0||pr===n-1||pc===n-1; } return true; };
   const empt=new Set(lv.clues.filter(c=>c.t==="empty").map(c=>c.r));
@@ -45,6 +46,6 @@ function check(lv){
   return {count,match,culpritOk};
 }
 const ONLY=process.env.ONLY?process.env.ONLY.split(",").map(Number):null;
-L.forEach((lv,ix)=>{ if(ONLY&&!ONLY.includes(ix)) return; const t=Date.now(); const {count,match,culpritOk}=check(lv); const good=count===1&&match&&culpritOk; if(!good) allOk=false;
+L.forEach((lv,ix)=>{ if(lv.ix!==undefined) ix=lv.ix; if(ONLY&&!ONLY.includes(ix)) return; const t=Date.now(); const {count,match,culpritOk}=check(lv); const good=count===1&&match&&culpritOk; if(!good) allOk=false;
   console.log(`T${lv.temp+1}C${lv.cap+1} ${lv.n}x${lv.n} ${lv.t}: soluções=${count>1?"2+":count} confere=${match} culpado=${culpritOk} ${good?"OK":"FALHA"} (${Date.now()-t}ms)`); });
 console.log(allOk?"TODOS OS CASOS OK":"HÁ FALHAS"); process.exit(allOk?0:1);
