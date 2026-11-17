@@ -1,0 +1,27 @@
+// Cenários: cômodos (nome, preposição) e elenco de suspeitos (nome curto, nome completo, gênero).
+module.exports = {
+  solar: { nome: "Solar Montenegro",
+    rooms: [["Cozinha","na"],["Biblioteca","na"],["Salão","no"],["Adega","na"],["Escritório","no"],["Estufa","na"],["Capela","na"],["Sala de Música","na"]],
+    cast: { Odete:["Condessa Odete","f"], Bento:["Dr. Bento","m"], Irene:["Chef Irene","f"], Ramos:["Coronel Ramos","m"], Luna:["Madame Luna","f"], Teodoro:["Mordomo Teodoro","m"], Glória:["Srta. Glória","f"] } },
+  trem: { nome: "Expresso Aurora",
+    rooms: [["Locomotiva","na"],["Vagão-Restaurante","no"],["Bagageiro","no"],["Vagão-Leito","no"],["Vagão-Bar","no"],["Corredor","no"],["Cabine Real","na"],["Vagão-Correio","no"]],
+    cast: { Jonas:["Maquinista Jonas","m"], Rita:["Condutora Rita","f"], Pimentel:["Sr. Pimentel","m"], Zuleica:["Dona Zuleica","f"], Lia:["Fotógrafa Lia","f"], Anselmo:["Padre Anselmo","m"], Nestor:["Carteador Nestor","m"] } },
+  navio: { nome: "Navio Estrela do Sul",
+    rooms: [["Convés","no"],["Ponte de Comando","na"],["Casa de Máquinas","na"],["Cozinha de Bordo","na"],["Salão de Baile","no"],["Camarote","no"],["Porão","no"],["Enfermaria","na"]],
+    cast: { Helena:["Capitã Helena","f"], Lauro:["Imediato Lauro","m"], Duda:["Cozinheiro Duda","m"], Marina:["Dra. Marina","f"], Bela:["Cantora Bela","f"], Tião:["Marujo Tião","m"], Wagner:["Sr. Wagner","m"] } },
+  teatro: { nome: "Teatro Imperial",
+    rooms: [["Palco","no"],["Coxia","na"],["Camarim","no"],["Plateia","na"],["Bilheteria","na"],["Fosso da Orquestra","no"],["Sala de Figurinos","na"],["Foyer","no"]],
+    cast: { Yara:["Diretora Yara","f"], Valentim:["Ator Valentim","m"], Clarice:["Atriz Clarice","f"], Zeca:["Contrarregra Zeca","m"], Dalva:["Costureira Dalva","f"], Edgar:["Crítico Edgar","m"], Kauã:["Iluminador Kauã","m"] } },
+  hotel: { nome: "Hotel Miramar",
+    rooms: [["Recepção","na"],["Restaurante","no"],["Piscina","na"],["Suíte Presidencial","na"],["Lavanderia","na"],["Academia","na"],["Terraço","no"],["Spa","no"]],
+    cast: { Sílvia:["Gerente Sílvia","f"], Caíque:["Recepcionista Caíque","m"], Norma:["Hóspede Norma","f"], Joana:["Camareira Joana","f"], Fábio:["Empresário Fábio","m"], Hans:["Sommelier Hans","m"], Mel:["Influencer Mel","f"] } },
+  museu: { nome: "Museu de Curiosidades",
+    rooms: [["Sala Egípcia","na"],["Galeria","na"],["Reserva Técnica","na"],["Café","no"],["Laboratório","no"],["Sala dos Fósseis","na"],["Hall","no"],["Sala das Joias","na"]],
+    cast: { Amélia:["Curadora Amélia","f"], Osvaldo:["Vigia Osvaldo","m"], Kátia:["Restauradora Kátia","f"], Félix:["Arqueólogo Félix","m"], Bia:["Estagiária Bia","f"], Rui:["Colecionador Rui","m"], Lúcio:["Guia Lúcio","m"] } },
+  circo: { nome: "Circo Girassol",
+    rooms: [["Picadeiro","no"],["Trailer","no"],["Camarim","no"],["Bilheteria","na"],["Jaula","na"],["Arquibancada","na"],["Cozinha","na"],["Lona de Ensaio","na"]],
+    cast: { Nina:["Domadora Nina","f"], Pipoca:["Palhaço Pipoca","m"], Ícaro:["Trapezista Ícaro","m"], Sálvio:["Mágico Sálvio","m"], Tereza:["Malabarista Tereza","f"], Gaspar:["Dono Gaspar","m"], Esmeralda:["Vidente Esmeralda","f"] } },
+  fazenda: { nome: "Fazenda Boa Vista",
+    rooms: [["Casarão","no"],["Celeiro","no"],["Curral","no"],["Pomar","no"],["Moinho","no"],["Capela","na"],["Cozinha","na"],["Alambique","no"]],
+    cast: { Cida:["Dona Cida","f"], Juca:["Capataz Juca","m"], Paula:["Veterinária Paula","f"], Ulisses:["Viajante Ulisses","m"], Lívia:["Herdeira Lívia","f"], Benê:["Cozinheira Benê","f"], Neco:["Peão Neco","m"] } }
+};

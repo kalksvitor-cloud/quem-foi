@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Quem Foi? Mistérios de lógica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbf8f3;--card:#ffffff;--ink:#1f2433;--muted:#7b8194;--line:#ece7df;--wall:#2a2f3f;
+  --F:#2fb67c;--Fs:#e3f7ee;--M:#f2a516;--Ms:#fff3d6;--D:#f0546a;--Ds:#ffe4e8;--acc:#6c5ce7;
+  --r:18px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Outfit",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.wrap{max-width:560px;margin:0 auto;padding:18px 16px 48px}
+.hidden{display:none!important}
+/* ---------- capa ---------- */
+.hero{padding:10px 2px 18px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:48px;height:48px;border-radius:14px;display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:6px;background:var(--ink);transform:rotate(-6deg)}
+.logo i{border-radius:4px}
+.logo i:nth-child(1){background:#ff8787}.logo i:nth-child(2){background:#74c0fc}.logo i:nth-child(3){background:#ffd43b}.logo i:nth-child(4){background:#8ce99a}
+h1{font-size:34px;line-height:1;margin:0;font-weight:800;letter-spacing:-.5px}
+.tagline{color:var(--muted);margin:10px 0 0;font-size:15.5px}
+.tabs{display:flex;gap:8px;margin:18px 0 14px}
+.tab{flex:1;border-radius:14px;padding:10px 6px;background:var(--card);border:1.5px solid var(--line);text-align:center;transition:.15s}
+.tab b{display:block;font-weight:700;font-size:15px}
+.tab small{color:var(--muted);font-size:12.5px}
+.tab.on.F{background:var(--Fs);border-color:var(--F)}.tab.on.M{background:var(--Ms);border-color:var(--M)}.tab.on.D{background:var(--Ds);border-color:var(--D)}
+.bar{height:5px;border-radius:9px;background:var(--line);margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:9px}
+.list{display:flex;flex-direction:column;gap:9px}
+.case{display:flex;align-items:center;gap:12px;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:11px 13px;text-align:left;transition:transform .1s}
+.case:active{transform:scale(.985)}
+.case .em{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.case .tx{flex:1;min-width:0}
+.case .tx b{display:block;font-weight:600;font-size:16px}
+.case .tx small{color:var(--muted);font-size:13px}
+.case .st{font-size:13px;font-weight:700;color:var(--muted);flex:none}
+.case.done .st{color:var(--F)}
+.foot{margin-top:18px;display:flex;justify-content:center}
+.ghost{color:var(--muted);font-size:14px;padding:8px 12px;border-radius:10px}
+.views{display:flex;background:#efeae2;border-radius:14px;padding:4px;margin:16px 0 14px}
+.views button{flex:1;padding:9px;border-radius:11px;font-weight:600;font-size:14.5px;color:var(--muted)}
+.views button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.season{position:relative;display:block;width:100%;text-align:left;border-radius:22px;padding:18px 18px 16px;color:#fff;overflow:hidden;margin-bottom:12px;box-shadow:0 10px 24px -14px rgba(31,36,51,.6);transition:transform .1s}
+.season:active{transform:scale(.985)}
+.season .num{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.85}
+.season .nm{display:block;font-size:25px;font-weight:800;letter-spacing:-.3px;margin:2px 0 0}
+.season .sb{opacity:.9;font-size:14.5px}
+.season .em{position:absolute;right:14px;top:10px;font-size:54px;opacity:.95;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2))}
+.season .pg{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:13px;font-weight:600}
+.season .pg .bar{flex:1;background:rgba(255,255,255,.3);margin:0;height:6px}
+.season .pg .bar i{background:#fff}
+.season.locked{filter:grayscale(.85);opacity:.55}
+.shead{border-radius:22px;padding:18px;color:#fff;margin-bottom:14px;position:relative;overflow:hidden}
+.shead .em{position:absolute;right:14px;top:8px;font-size:50px}
+.shead b{display:block;font-size:24px;font-weight:800}
+.case.locked{opacity:.5}
+.case .num2{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;flex:none;color:#fff}
+.prev{background:#f6f3ee;border-radius:14px;padding:10px 14px;margin:10px 0 4px;font-size:14px;color:#555b6e}
+.prev b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:2px}
+.cont{border-radius:16px;padding:12px 14px;margin:12px 0 0;color:#fff;font-size:15px}
+.cont b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.8px;opacity:.85;margin-bottom:2px}
+/* ---------- jogo ---------- */
+.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.icon{width:40px;height:40px;border-radius:12px;background:var(--card);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:17px;flex:none}
+.top .ttl{flex:1;min-width:0}
+.top .ttl b{display:block;font-size:19px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:99px;letter-spacing:.3px;text-transform:uppercase}
+.pill.F{background:var(--Fs);color:#1d8a5b}.pill.M{background:var(--Ms);color:#b97800}.pill.D{background:var(--Ds);color:#c8344a}
+.board{position:relative;width:100%;aspect-ratio:1;border-radius:16px;overflow:hidden;background:var(--wall);padding:5px;user-select:none;touch-action:manipulation;box-shadow:0 14px 30px -14px rgba(31,36,51,.55), inset 0 -3px 0 rgba(0,0,0,.35)}
+.stage{position:relative;width:100%;height:100%;border-radius:10px;overflow:hidden}
+.layer{position:absolute;inset:0;display:grid}
+.rugs{position:absolute;inset:0;pointer-events:none}
+.rugs svg{position:absolute;display:block}
+.fl{border:0 solid var(--wall);position:relative}
+.fl.bt{border-top-width:3px;box-shadow:inset 0 7px 6px -5px rgba(0,0,0,.28)}
+.fl.bl{border-left-width:3px}
+.fl.bl:not(.bt){box-shadow:inset 7px 0 6px -5px rgba(0,0,0,.22)}
+.fl.bt.bl{box-shadow:inset 0 7px 6px -5px rgba(0,0,0,.28), inset 7px 0 6px -5px rgba(0,0,0,.22)}
+.fl.wt{box-shadow:inset 0 8px 7px -5px rgba(0,0,0,.3)}
+.fl.wt.bl{box-shadow:inset 0 8px 7px -5px rgba(0,0,0,.3), inset 7px 0 6px -5px rgba(0,0,0,.22)}
+.fl.wl{box-shadow:inset 7px 0 6px -5px rgba(0,0,0,.22)}
+.fl.wt.wl{box-shadow:inset 0 8px 7px -5px rgba(0,0,0,.3), inset 7px 0 6px -5px rgba(0,0,0,.22)}
+.furn{width:88%;height:88%;pointer-events:none}
+.furn svg{width:100%;height:100%;display:block}
+.fav{display:inline-block;width:1.25em;height:1.25em;border-radius:50%;overflow:hidden;vertical-align:-.28em;margin-right:3px}
+.fav svg{width:100%;height:100%;display:block}
+.cell{position:relative;display:flex;align-items:center;justify-content:center;border:0 solid transparent}
+.cell.bt{border-top-width:3px}.cell.bl{border-left-width:3px}
+.cell:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 .5px rgba(42,47,63,.10);pointer-events:none}
+.lbl{position:absolute;top:3px;left:3px;font-size:8.5px;line-height:1.15;font-weight:800;color:#2a2f3f;background:rgba(255,255,255,.85);border-radius:5px;padding:1px 4px;max-width:calc(100% - 6px);pointer-events:none;z-index:3;text-transform:uppercase;letter-spacing:.3px;overflow:hidden;text-overflow:ellipsis}
+.lbl.one{white-space:normal}
+.board.bigb .lbl{font-size:7px;padding:0 3px;top:2px;left:2px}
+.lbl.vert{writing-mode:vertical-rl;white-space:nowrap;top:5px;left:3px}
+.obj{font-size:min(6.2vw,29px);line-height:1;pointer-events:none;filter:saturate(.9)}
+.cell.block{background-image:repeating-linear-gradient(-45deg,rgba(31,36,51,.06) 0 3px,transparent 3px 7px)!important}
+.chair{pointer-events:none}
+.cell.hasp .chair{opacity:.9}
+.x{font-size:min(5.5vw,24px);font-weight:700;color:rgba(31,36,51,.28);pointer-events:none}
+.av{width:80%;aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,.28),0 0 0 2.5px #fff;position:relative;z-index:1;animation:pop .18s ease-out}
+.av svg,.dot svg{width:100%;height:100%;display:block}
+.av.vic{box-shadow:0 4px 6px rgba(0,0,0,.28),0 0 0 2.5px #fff,0 0 0 4.5px #e03131}
+@keyframes pop{from{transform:scale(.4)}to{transform:scale(1)}}
+.cell.bad .av{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--D);animation:shake .3s 2}
+.cell.hint{animation:glow 1.1s 2}
+@keyframes glow{50%{box-shadow:inset 0 0 0 5px #ffd43b}}
+@keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.status{min-height:22px;font-size:14px;margin:10px 2px 4px;color:var(--muted);text-align:center}
+.status.err{color:var(--D);font-weight:600}
+.tools{display:flex;gap:8px;margin:8px 0 12px}
+.seg{display:flex;background:#efeae2;border-radius:12px;padding:3px;flex:1}
+.seg button{flex:1;padding:8px 6px;border-radius:9px;font-size:14px;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.tool{padding:8px 12px;border-radius:12px;background:var(--card);border:1.5px solid var(--line);font-size:14px;font-weight:600}
+.tray{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}
+.chip{display:flex;align-items:center;gap:7px;background:var(--card);border:1.5px solid var(--line);border-radius:99px;padding:4px 12px 4px 4px;font-size:14px;font-weight:500;transition:.12s}
+.chip .dot{width:30px;height:30px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;flex:none}
+.chip.sel{border-color:var(--ink);background:var(--ink);color:#fff;transform:translateY(-1px)}
+.chip.placed{opacity:.45}
+.chip.placed .nm:after{content:" ✓"}
+.chip .tag{font-size:10.5px;font-weight:700;text-transform:uppercase;color:var(--D);letter-spacing:.3px}
+.chip.sel .tag{color:#ffb3bf}
+h3.sec{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:4px 2px 8px;font-weight:700}
+.clues{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px}
+.clues li{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:10px 14px 10px 40px;position:relative;cursor:pointer;font-size:15.5px;transition:.15s}
+.clues li:before{content:attr(data-n);position:absolute;left:11px;top:10px;width:20px;height:20px;border-radius:7px;background:#efeae2;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.clues li.done{opacity:.4;text-decoration:line-through}
+.clues li.bad{border-color:var(--D);background:#fff5f6}
+.clues li.bad:after{content:"não bate";position:absolute;right:10px;bottom:-8px;font-size:10.5px;font-weight:700;color:#fff;background:var(--D);padding:1px 7px;border-radius:99px}
+.nmp{font-weight:700}
+.rule{font-size:13.5px;color:var(--muted);margin:14px 0 0;padding:12px 14px;border-radius:14px;background:#f3eee6}
+.gtitle{text-align:center;margin:2px 0 8px}
+.gtitle b{display:block;font-size:21px;font-weight:800;letter-spacing:-.2px}
+.top{justify-content:space-between}
+.timer{flex:1;display:flex;justify-content:center}
+.timer span{background:var(--ink);color:#fff;border-radius:99px;padding:6px 16px;font-weight:700;font-variant-numeric:tabular-nums;font-size:15px}
+.timer i{display:none}
+.boardwrap{overflow:auto;border-radius:16px;-webkit-overflow-scrolling:touch}
+.boardwrap.z .board{width:175%}
+.tools2{display:flex;gap:6px;margin:12px 0 10px}
+.tools2 button{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 2px 6px;border-radius:14px;background:var(--card);border:1.5px solid var(--line);font-size:12.5px;font-weight:600;color:var(--ink)}
+.tools2 button span{font-size:18px;line-height:1.1}
+.tools2 button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.panel{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:10px 10px 12px}
+.cbar{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;scroll-snap-type:x proximity}
+.ch{flex:none;width:62px;text-align:center;font-size:12px;font-weight:500;scroll-snap-align:start;position:relative}
+.ch .pic{width:56px;height:56px;margin:0 auto 3px;border-radius:14px;overflow:hidden;box-shadow:0 0 0 2px var(--line);transition:.12s}
+.ch .pic svg{width:100%;height:100%;display:block}
+.ch.sel .pic{box-shadow:0 0 0 3px #fff,0 0 0 5.5px #f76707}
+.ch .ok{position:absolute;top:-2px;right:0;background:var(--F);color:#fff;border-radius:99px;font-size:10px;font-weight:800;width:18px;height:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff}
+.ch .vt{position:absolute;top:-2px;left:0;background:var(--D);color:#fff;border-radius:99px;font-size:9px;font-weight:800;padding:1px 5px;box-shadow:0 0 0 2px #fff}
+.ch .nm{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch.loc .pic{display:flex;align-items:center;justify-content:center;font-size:28px;background:#f3eee6}
+.cbox{background:#f6f1e9;border-radius:14px;padding:12px 14px;font-size:16px;line-height:1.5;min-height:56px}
+.cbox .who{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:4px}
+.cbox p{margin:0 0 4px}
+.cbox p.bad{color:var(--D)}
+.cbox p.bad:after{content:" ✗";font-weight:800}
+.all{margin-top:14px}
+.all summary{cursor:pointer;color:var(--muted);font-size:14px;font-weight:600;padding:6px 2px}
+.foot2{display:flex;justify-content:center;margin-top:6px}
+.nt{position:absolute;inset:6%;display:flex;flex-wrap:wrap;align-content:flex-start;gap:1px;pointer-events:none;z-index:2}
+.nt i{width:30%;aspect-ratio:1;border-radius:50%;box-shadow:0 0 0 1px #fff}
+/* ---------- modais ---------- */
+.modal{position:fixed;inset:0;background:rgba(31,36,51,.45);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.modal.on{display:flex}
+.box{background:var(--card);border-radius:24px 24px 0 0;max-width:560px;width:100%;padding:22px 20px calc(22px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto;animation:up .22s ease-out}
+@media(min-width:600px){.modal{align-items:center}.box{border-radius:24px;max-width:460px}}
+@keyframes up{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
+.box h2{margin:6px 0 6px;font-size:24px;font-weight:800;letter-spacing:-.3px}
+.box p{margin:8px 0;font-size:15.5px}
+.box .story{font-family:"Fraunces",Georgia,serif;font-style:italic;font-size:17px;line-height:1.5;color:#3a3f52}
+.box ul{padding-left:20px;font-size:14.5px;margin:8px 0}
+.box li{margin:4px 0}
+.big{width:62px;height:62px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px}
+.cast{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.cast .chip{pointer-events:none}
+.acc{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.acc .chip{padding:6px 14px 6px 6px;font-size:15px}
+.acc .chip.no{opacity:.35;text-decoration:line-through}
+.cta{display:block;width:100%;margin-top:16px;background:var(--ink);color:#fff;border-radius:14px;padding:14px;font-weight:700;font-size:16px}
+.row2{display:flex;gap:8px;margin-top:16px}
+.row2 button{flex:1;margin:0}
+.sec2{background:#efeae2!important;color:var(--ink)!important}
+.verdict{display:flex;align-items:center;gap:12px;background:#f6f3ee;border-radius:16px;padding:12px;margin:12px 0}
+.verdict .dot{width:64px;height:64px;overflow:hidden;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:22px;flex:none}
+.stars{font-size:14px;color:var(--muted)}
+.conf{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+.conf i{position:absolute;top:-12px;width:9px;height:14px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- CAPA -->
+  <div id="menu">
+    <div class="hero">
+      <div class="brand"><div class="logo"><i></i><i></i><i></i><i></i></div><h1>Quem Foi?</h1></div>
+      <p class="tagline">Uma série de mistérios de lógica. Descubra onde cada pessoa estava, aponte o culpado e siga a trama, capítulo a capítulo.</p>
+    </div>
+    <div class="views"><button id="vSeasons" class="on">Temporadas</button><button id="vDiff">Por dificuldade</button></div>
+    <div id="seasonList"></div>
+    <div id="seasonView" class="hidden"><button class="ghost" id="sBack" style="padding-left:0">← Temporadas</button><div class="shead" id="sHead"></div><div class="list" id="capList"></div></div>
+    <div id="diffView" class="hidden"><div class="tabs" id="tabs"></div><div class="list" id="list"></div></div>
+    <div class="foot"><button class="ghost" id="rulesBtn">Como jogar</button></div>
+  </div>
+
+  <!-- JOGO -->
+  <div id="game" class="hidden">
+    <div class="gtitle"><span class="pill" id="gPill"></span><b id="gTitle"></b></div>
+    <div class="top">
+      <button class="icon" id="back" aria-label="Voltar">‹</button>
+      <button class="icon" id="rulesBtn2" aria-label="Regras">?</button>
+      <div class="timer"><i></i><span id="timer">00:00</span></div>
+      <button class="icon" id="undo" aria-label="Desfazer">↶</button>
+      <button class="icon" id="zoom" aria-label="Zoom">⊕</button>
+      <button class="icon" id="storyBtn" aria-label="História">📖</button>
+    </div>
+    <div class="boardwrap" id="boardwrap"><div class="board" id="board"></div></div>
+    <div class="tools2">
+      <button data-mode="note"><span>✎</span>Notas</button>
+      <button data-mode="mark"><span>✕</span>Cruzes</button>
+      <button data-mode="place" class="on"><span>✓</span>Colocar</button>
+      <button data-mode="erase"><span>⌫</span>Apagar</button>
+      <button id="hint"><span>💡</span>Ajuda</button>
+    </div>
+    <div class="panel">
+      <div class="cbar" id="tray"></div>
+      <div class="cbox" id="cbox"></div>
+    </div>
+    <div class="status" id="status"></div>
+    <details class="all"><summary>Ver todos os depoimentos</summary><ul class="clues" id="clues"></ul></details>
+    <div class="foot2"><button class="ghost" id="reset">↺ Recomeçar caso</button></div>
+  </div>
+</div>
+
+<div class="modal" id="mRules"><div class="box">
+  <h2>Como jogar</h2>
+  <p>Cada caso traz a planta de um lugar, as pessoas que estavam lá e alguns depoimentos. Descubra onde cada uma estava.</p>
+  <ul>
+    <li>Cada <b>linha</b> e cada <b>coluna</b> tem exatamente <b>uma pessoa</b>.</li>
+    <li>Ninguém fica sobre planta, estante, piano ou mesa. Na cadeira pode, e a pessoa fica sentada.</li>
+    <li>“Ao lado de” é vizinho na horizontal ou vertical, nunca na diagonal.</li>
+    <li>“Mais à esquerda” e “mais acima” valem para qualquer distância.</li>
+    <li>As linhas grossas são as paredes dos cômodos. A “parede externa” é a borda da planta.</li>
+    <li>O <b>culpado</b> é a <b>única</b> pessoa que estava no mesmo cômodo que a vítima. Isso também é uma pista!</li>
+  </ul>
+  <p style="font-size:14px;color:var(--muted)">Toque no retrato de um personagem para ver as pistas dele. Com <b>Colocar</b> ativo, toque numa casa para posicioná-lo. <b>Cruzes</b> descarta casas, <b>Notas</b> marca possibilidades daquele personagem e <b>Apagar</b> limpa uma casa. Uma pista fica <b style="color:var(--D)">vermelha</b> quando sua jogada a contradiz. Todo caso tem uma única solução, alcançável só com lógica.</p>
+  <button class="cta" data-close>Entendi</button>
+</div></div>
+
+<div class="modal" id="mStory"><div class="box">
+  <div class="big" id="sEm"></div>
+  <span class="pill" id="sPill" style="margin-top:12px"></span>
+  <h2 id="sTitle"></h2>
+  <p style="color:var(--muted);font-size:14px;margin-top:0" id="sLocal"></p>
+  <div class="prev hidden" id="sPrev"><b>Anteriormente</b><span></span></div>
+  <p class="story" id="sText"></p>
+  <div class="cast" id="sCast"></div>
+  <button class="cta" data-close id="sGo">Investigar</button>
+</div></div>
+
+<div class="modal" id="mAccuse"><div class="box">
+  <h2>Todos em seus lugares!</h2>
+  <p>As posições batem com todos os depoimentos. Agora, aponte: quem foi?</p>
+  <div class="acc" id="accList"></div>
+  <p class="status" id="accMsg"></p>
+</div></div>
+
+<div class="modal" id="mWin"><div class="box">
+  <span class="pill" id="wPill"></span>
+  <h2>Caso encerrado!</h2>
+  <div class="verdict"><div class="dot" id="wDot"></div><div><b id="wName"></b><div class="stars" id="wWhere"></div></div></div>
+  <p class="story" id="wText"></p>
+  <p class="stars" id="wHints"></p>
+  <div class="cont" id="wCont"><b id="wContT">Continua…</b><span id="wG"></span></div>
+  <div class="row2"><button class="cta sec2" id="winMenu">Casos</button><button class="cta" id="winNext">Próximo →</button></div>
+</div></div>
+<div class="conf" id="conf"></div>
+
+<script>
+const CASES = __NIVEIS__;
+const SEASONS = __TEMPORADAS__;
+const DIFF = {F:"Fácil", M:"Médio", D:"Difícil"};
+const SET = {"Solar Montenegro":["🏰","#efe7ff"],"Expresso Aurora":["🚂","#e0f2ff"],"Navio Estrela do Sul":["🚢","#dcf7f3"],"Teatro Imperial":["🎭","#ffe4ec"],"Hotel Miramar":["🏨","#fff1d6"],"Museu de Curiosidades":["🏛️","#ecebe6"],"Circo Girassol":["🎪","#ffe8dc"],"Fazenda Boa Vista":["🌾","#e7f6dc"]};
+const PCOL = ["#ff6b6b","#4c9ffe","#20b97a","#f59f00","#9775fa","#f76707","#0ca5b0","#e64980","#74b816","#1c7ed6","#ae3ec9"];
+const RCOL = ["#ffd9d9","#d3e8ff","#d5f2cf","#fff0b8","#e6ddff","#ffdcc4","#c8eef3","#fbd5ec"];
+const OBJ = {planta:"🪴",estante:"📚",piano:"🎹",cadeira:"🪑"};
+const OBJN = {planta:"uma planta",estante:"uma estante",piano:"um piano",mesa:"uma mesa",cadeira:"uma cadeira"};
+const BLOCK = new Set(["planta","estante","piano","mesa"]);
+const $ = id => document.getElementById(id);
+__AVATAR__
+__CENAS__
+const face = (p) => AV.svg(p.full, p.g, p.c, p.victim);
+
+let store = {};
+try { store = JSON.parse(localStorage.getItem("quem-foi-serie")||"{}"); } catch(e){}
+store.done ||= {}; store.state ||= {}; store.tab ||= "F";
+const save = () => { try { localStorage.setItem("quem-foi-serie", JSON.stringify(store)); } catch(e){} };
+const key = c => "T"+c.temp+"C"+c.cap;
+const idxOf = (t,c) => CASES.findIndex(x=>x.temp===t&&x.cap===c);
+const seasonDone = t => CASES.filter(c=>c.temp===t&&store.done[key(c)]).length;
+const unlockedSeason = t => t===0 || seasonDone(t-1)===10;
+const unlocked = c => unlockedSeason(c.temp) && (c.cap===0 || !!store.done[key(CASES[idxOf(c.temp,c.cap-1)])]);
+const capLabel = c => `Temporada ${c.temp+1} · Capítulo ${c.cap+1}`;
+
+let L, li, P, place, marks, notes, sel=0, mode="place", struck, hints, wrongAcc, secs=0, tick=null, hist=[], solved=false;
+
+function initial(p){ if(p.ini) return p.ini; const w=p.full.split(" "); return w[w.length-1][0]; }
+function setup(i){
+  li=i; L=CASES[i];
+  P = L.people.map((p,k)=>({...p, c: p.victim ? "#495057" : PCOL[(k-1)%PCOL.length], i: initial(p)}));
+  P.forEach(p=>p.svg=face(p));
+  const st = store.state[key(L)];
+  place = st ? st.place : Array(L.n).fill(null);
+  marks = st ? st.marks : {}; struck = st ? st.struck : {}; hints = st ? st.hints||0 : 0;
+  notes = st&&st.notes ? st.notes : {}; secs = st&&st.secs ? st.secs : 0;
+  sel=0; wrongAcc=0; hist=[]; solved=!!store.done[key(L)] && place.every(Boolean);
+  $("boardwrap").classList.remove("z");
+  clearInterval(tick); tick=setInterval(()=>{ if(document.hidden||solved||$("game").classList.contains("hidden")||document.querySelector(".modal.on")) return; secs++; showTime(); if(secs%5===0) persist(); },1000); showTime();
+  $("gPill").className="pill "+L.d; $("gPill").textContent=DIFF[L.d];
+  $("gTitle").textContent=L.t;
+  renderClues(); setMode("place"); render();
+  $("menu").classList.add("hidden"); $("game").classList.remove("hidden");
+  window.scrollTo(0,0);
+  if(!st || !st.place.some(Boolean)) openStory();
+}
+function openStory(){
+  const s=SET[L.local]||["🔍","#eee"];
+  $("sEm").textContent=s[0]; $("sEm").style.background=s[1];
+  $("sPill").className="pill "+L.d; $("sPill").textContent=DIFF[L.d]+" · "+L.n+"×"+L.n;
+  $("sTitle").textContent=L.t; $("sLocal").textContent=capLabel(L)+" · "+L.local;
+  const pv = L.cap>0 ? CASES[idxOf(L.temp,L.cap-1)] : null;
+  $("sPrev").classList.toggle("hidden",!pv); if(pv) $("sPrev").querySelector("span").textContent=pv.g;
+  $("sText").textContent=L.i;
+  $("sCast").innerHTML = P.map(p=>chipHTML(p)).join("");
+  $("mStory").classList.add("on");
+}
+const chipHTML = p => `<span class="chip"><span class="dot" style="background:${p.c}">${p.svg}</span><span class="nm">${p.full}</span>${p.victim?'<span class="tag">vítima</span>':''}</span>`;
+function persist(){ store.state[key(L)]={place,marks,notes,struck,hints,secs}; save(); }
+const fmt = t => String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0");
+function showTime(){ $("timer").textContent=fmt(secs); }
+function snap(){ hist.push(JSON.stringify({place,marks,notes})); if(hist.length>200) hist.shift(); }
+
+const pn = p => `<span class="nmp" style="color:${P[p].victim?"#c92a2a":P[p].c}"><span class="fav">${P[p].svg}</span>${P[p].full}</span>`;
+const g = (p,m,f) => P[p].g==="f"?f:m;
+const rn = r => `${L.rooms[r][1]} <b>${(SCENE.R[L.rooms[r][0]]||[])[1]||""} ${L.rooms[r][0]}</b>`;
+function clueText(c){
+  switch(c.t){
+    case "in": return `${pn(c.p)} estava ${rn(c.r)}.`;
+    case "notin": return `${pn(c.p)} não estava ${rn(c.r)}.`;
+    case "chair": return `${pn(c.p)} estava ${g(c.p,"sentado","sentada")} numa cadeira <span class="fav" style="border-radius:0">${SCENE.FURN.cadeira}</span>.`;
+    case "adj": return `${pn(c.p)} estava ao lado de ${OBJN[c.o]} <span class="fav" style="border-radius:0">${SCENE.FURN[c.o]}</span>.`;
+    case "chairin": return `${pn(c.p)} estava ${g(c.p,"sentado","sentada")} numa cadeira <span class="fav" style="border-radius:0">${SCENE.FURN.cadeira}</span> ${rn(c.r)}.`;
+    case "edge": return `${pn(c.p)} estava ${g(c.p,"encostado","encostada")} numa parede externa.`;
+    case "same": return `${pn(c.p)} e ${pn(c.q)} estavam no mesmo cômodo.`;
+    case "diff": return `${pn(c.p)} e ${pn(c.q)} estavam em cômodos diferentes.`;
+    case "west": return `${pn(c.p)} estava mais à esquerda que ${pn(c.q)}.`;
+    case "north": return `${pn(c.p)} estava mais acima que ${pn(c.q)}.`;
+    case "alone": return `${pn(c.p)} estava ${g(c.p,"sozinho","sozinha")} num cômodo.`;
+    case "empty": return `Não havia ninguém ${rn(c.r)}.`;
+  }
+}
+const subj = p => P[p].victim ? `${P[p].g==="f"?"Ela":"Ele"} (a vítima)` : (P[p].g==="f"?"Ela":"Ele");
+const ob = (o) => `<b>${OBJN[o].split(" ")[1]}</b> <span class="fav" style="border-radius:0">${SCENE.FURN[o]}</span>`;
+function clueFor(c,p){
+  const S=subj(p), o=c.p===p?c.q:c.p;
+  switch(c.t){
+    case "in": return `${S} estava ${rn(c.r)}.`;
+    case "notin": return `${S} não estava ${rn(c.r)}.`;
+    case "chair": return `${S} estava ${g(p,"sentado","sentada")} numa ${ob("cadeira")}.`;
+    case "chairin": return `${S} estava ${g(p,"sentado","sentada")} numa ${ob("cadeira")} ${rn(c.r)}.`;
+    case "adj": return `${S} estava ao lado de ${OBJN[c.o].split(" ")[0]} ${ob(c.o)}.`;
+    case "edge": return `${S} estava ${g(p,"encostado","encostada")} numa parede externa.`;
+    case "same": return `${S} estava no mesmo cômodo que ${pn(o)}.`;
+    case "diff": return `${S} não estava no mesmo cômodo que ${pn(o)}.`;
+    case "west": return `${S} estava mais à esquerda que ${pn(c.q)}.`;
+    case "north": return `${S} estava mais acima que ${pn(c.q)}.`;
+    case "alone": return `${S} estava ${g(p,"sozinho","sozinha")} num cômodo.`;
+  }
+}
+const mine = (c,p) => c.p===p || ((c.t==="same"||c.t==="diff") && c.q===p);
+function renderPanel(){
+  const t=$("tray"); t.innerHTML="";
+  P.forEach((pp,p)=>{
+    const ch=document.createElement("button");
+    ch.className="ch"+(sel===p?" sel":"");
+    ch.innerHTML=`<div class="pic" style="background:${pp.c}">${pp.svg}</div>${place[p]?'<span class="ok">✓</span>':""}${pp.victim?'<span class="vt">vítima</span>':""}<span class="nm">${pp.full.split(" ").slice(-1)[0]}</span>`;
+    ch.onclick=()=>{ sel=p; if(mode==="mark"||mode==="erase") setMode("place"); render(); };
+    t.appendChild(ch);
+  });
+  const empties=L.clues.filter(c=>c.t==="empty");
+  if(empties.length){ const ch=document.createElement("button"); ch.className="ch loc"+(sel==="loc"?" sel":"");
+    ch.innerHTML=`<div class="pic">🏠</div><span class="nm">Local</span>`; ch.onclick=()=>{ sel="loc"; render(); }; t.appendChild(ch); }
+  const box=$("cbox");
+  if(sel==="loc"){ box.innerHTML=`<div class="who">O local</div>`+empties.map(c=>`<p class="${clueBad(c)?"bad":""}">Não havia ninguém ${rn(c.r)}.</p>`).join(""); return; }
+  const list=L.clues.filter(c=>mine(c,sel));
+  box.innerHTML=`<div class="who">${P[sel].full}${P[sel].victim?" · vítima":""}</div>`+(list.length?list.map(c=>`<p class="${clueBad(c)?"bad":""}">${clueFor(c,sel)}</p>`).join(""):`<p style="color:var(--muted)">Nenhum depoimento sobre esta pessoa. Use as pistas dos outros!</p>`);
+}
+function renderClues(){
+  const ul=$("clues"); ul.innerHTML="";
+  L.clues.forEach((c,k)=>{
+    const e=document.createElement("li"); e.innerHTML=clueText(c); e.dataset.n=k+1;
+    if(struck[k]) e.classList.add("done");
+    e.onclick=()=>{ struck[k]=!struck[k]; e.classList.toggle("done"); persist(); };
+    ul.appendChild(e);
+  });
+}
+function clueBad(c){
+  const at=p=>place[p], R=p=>L.room[place[p][0]][place[p][1]];
+  const placedIn=r=>place.filter(x=>x&&L.room[x[0]][x[1]]===r).length;
+  if(c.t==="empty") return placedIn(c.r)>0;
+  if(!at(c.p) || (c.q!==undefined && !at(c.q))) return false;
+  const [pr,pc]=place[c.p];
+  switch(c.t){
+    case "in": return R(c.p)!==c.r;
+    case "notin": return R(c.p)===c.r;
+    case "chair": return L.obj[pr][pc]!=="cadeira";
+    case "chairin": return L.obj[pr][pc]!=="cadeira"||R(c.p)!==c.r;
+    case "adj": return ![[0,1],[1,0],[0,-1],[-1,0]].some(([a,b])=>L.obj[pr+a]?.[pc+b]===c.o);
+    case "edge": return !(pr===0||pc===0||pr===L.n-1||pc===L.n-1);
+    case "same": return R(c.p)!==R(c.q);
+    case "diff": return R(c.p)===R(c.q);
+    case "west": return !(pc<place[c.q][1]);
+    case "north": return !(pr<place[c.q][0]);
+    case "alone": return placedIn(R(c.p))>1;
+  }
+  return false;
+}
+function conflicts(){
+  const bad=new Set(); const pl=place.map((x,p)=>[x,p]).filter(a=>a[0]);
+  for(const [a,p] of pl) for(const [b,q] of pl) if(p<q&&(a[0]===b[0]||a[1]===b[1])){bad.add(p);bad.add(q);}
+  return bad;
+}
+function largestRect(rm){
+  const n=L.n; let best=null;
+  for(let r1=0;r1<n;r1++) for(let c1=0;c1<n;c1++) for(let r2=r1;r2<n;r2++) for(let c2=c1;c2<n;c2++){
+    let ok=true; for(let r=r1;r<=r2&&ok;r++) for(let c=c1;c<=c2;c++) if(L.room[r][c]!==rm){ok=false;break;}
+    if(!ok) continue; const a=(r2-r1+1)*(c2-c1+1);
+    if(!best||a>best.a) best={r1,c1,r2,c2,a};
+  }
+  return best;
+}
+function render(){
+  const n=L.n, b=$("board"); b.classList.toggle("bigb", n>=9);
+  const bad=conflicts(), who={};
+  place.forEach((x,p)=>{ if(x) who[x[0]+","+x[1]]=p; });
+  const lab={};
+  for(let r=0;r<n;r++) for(let c=0;c<n;c++){ const rm=L.room[r][c]; if(c>0&&L.room[r][c-1]===rm) continue;
+    let run=1; while(c+run<n&&L.room[r][c+run]===rm) run++;
+    if(!lab[rm]||run>lab[rm].run||(run===lab[rm].run&&r<lab[rm].r)) lab[rm]={r,c,run}; }
+  for(const rm in lab){ const lb=lab[rm]; if(lb.run>1) continue;
+    let best=null; for(let r=0;r<n;r++) for(let c=0;c<n;c++){ if(L.room[r][c]!=rm||(r>0&&L.room[r-1][c]==rm)) continue;
+      let v=1; while(r+v<n&&L.room[r+v][c]==rm) v++; if(!best||v>best.v) best={r,c,v}; }
+    if(best.v>1) lab[rm]={r:best.r,c:best.c,run:1,v:best.v}; }
+  const theme = rm => SCENE.T[(SCENE.R[L.rooms[rm][0]]||["wood"])[0]];
+  let floor="", rugs="", cont="";
+  for(let r=0;r<n;r++) for(let c=0;c<n;c++){
+    const rm=L.room[r][c], th=theme(rm);
+    const cls=["fl"]; if(r>0&&L.room[r-1][c]!==rm) cls.push("bt"); if(c>0&&L.room[r][c-1]!==rm) cls.push("bl"); if(r===0) cls.push("wt"); if(c===0) cls.push("wl");
+    floor+=`<div class="${cls.join(" ")}" style="background-color:${th.bg};background-image:${th.img};background-size:${th.size||"100% 100%"}"></div>`;
+  }
+  const cell=100/n;
+  const rooms=[...new Set(L.room.flat())];
+  rooms.forEach((rm,k)=>{ const th=theme(rm); if(!th.rug) return; const R=largestRect(rm); if(!R||R.a<2) return;
+    const w=R.c2-R.c1+1, h=R.r2-R.r1+1;
+    rugs+=`<div style="position:absolute;left:${R.c1*cell}%;top:${R.r1*cell}%;width:${w*cell}%;height:${h*cell}%;padding:${Math.max(3,8-n)}px">${SCENE.rugSVG(th.rug,w,h,rm+k).replace("<svg",'<svg style="width:100%;height:100%;position:static"')}</div>`; });
+  for(let r=0;r<n;r++) for(let c=0;c<n;c++){
+    const rm=L.room[r][c]; const cls=["cell"];
+    if(r>0&&L.room[r-1][c]!==rm) cls.push("bt"); if(c>0&&L.room[r][c-1]!==rm) cls.push("bl");
+    let h="";
+    const lb=lab[rm]; if(lb.r===r&&lb.c===c){ h+= lb.v ? `<div class="lbl vert" style="height:calc(${lb.v*100}% - 10px)">${L.rooms[rm][0]}</div>` : `<div class="lbl${lb.run>1?" one":""}" style="max-width:calc(${lb.run*100}% - 6px)">${L.rooms[rm][0]}</div>`; }
+    const o=L.obj[r][c];
+    if(BLOCK.has(o)) h+=`<div class="furn">${SCENE.FURN[o]}</div>`;
+    const p=who[r+","+c];
+    if(o==="cadeira") h+=`<div class="furn chair" style="position:absolute;inset:6%;width:auto;height:auto">${SCENE.FURN.cadeira}</div>`;
+    if(p!==undefined){ cls.push("hasp"); if(bad.has(p)) cls.push("bad");
+      h+=`<div class="av${P[p].victim?" vic":""}" style="background:${P[p].c}">${P[p].svg}</div>`; }
+    else if(marks[r+","+c]) h+=`<span class="x">✕</span>`;
+    if(p===undefined && notes[r+","+c] && notes[r+","+c].length) h+=`<div class="nt">${notes[r+","+c].map(q=>`<i style="background:${P[q].c}"></i>`).join("")}</div>`;
+    cont+=`<div class="${cls.join(" ")}" data-r="${r}" data-c="${c}">${h}</div>`;
+  }
+  const gt=`grid-template-columns:repeat(${n},1fr);grid-template-rows:repeat(${n},1fr)`;
+  b.innerHTML=`<div class="stage"><div class="layer" style="${gt}">${floor}</div><div class="rugs">${rugs}</div><div class="layer" id="cells" style="${gt}">${cont}</div></div>`;
+  $("cells").querySelectorAll(".cell").forEach(d=>d.onclick=()=>tap(+d.dataset.r,+d.dataset.c));
+  renderPanel();
+  document.querySelectorAll("#clues li").forEach((e,k)=>e.classList.toggle("bad",clueBad(L.clues[k])));
+  status();
+}
+function status(msg,err){
+  const s=$("status");
+  if(msg){ s.textContent=msg; s.className="status"+(err?" err":""); return; }
+  if(conflicts().size){ s.textContent="Duas pessoas na mesma linha ou coluna."; s.className="status err"; return; }
+  s.className="status";
+  const who = typeof sel==="number" ? P[sel].full : null;
+  s.textContent = mode==="mark" ? "Toque nas casas para marcar ou tirar uma cruz." :
+    mode==="erase" ? "Toque numa casa para limpá-la." :
+    mode==="note" ? (who?`Toque nas casas onde ${who} pode estar.`:"Escolha um personagem para anotar.") :
+    place.every(Boolean) ? "Todos posicionados." : (who?`Toque numa casa para colocar ${who}.`:"Escolha um personagem.");
+}
+function tap(r,c){
+  const k=r+","+c, o=L.obj[r][c];
+  const occ=place.findIndex(x=>x&&x[0]===r&&x[1]===c);
+  if(BLOCK.has(o)){ if(mode==="place") status(`Ninguém pode ficar sobre ${OBJN[o].replace("uma ","a ").replace("um ","o ")}.`,true); return; }
+  snap();
+  if(mode==="mark"){ if(occ>=0) return; if(marks[k]) delete marks[k]; else marks[k]=1; }
+  else if(mode==="erase"){ if(occ>=0) place[occ]=null; delete marks[k]; delete notes[k]; }
+  else if(mode==="note"){ if(typeof sel!=="number"||occ>=0) return; const a=notes[k]||[]; const i=a.indexOf(sel); if(i>=0) a.splice(i,1); else a.push(sel); notes[k]=a; }
+  else {
+    if(typeof sel!=="number") return;
+    if(occ===sel){ place[sel]=null; }
+    else { if(occ>=0) place[occ]=null; place[sel]=[r,c]; delete marks[k]; delete notes[k];
+      // avança para o próximo personagem ainda sem lugar
+      const nx=P.findIndex((_,q)=>!place[q]); if(nx>=0) sel=nx; }
+  }
+  persist(); render(); check();
+}
+function check(){
+  if(place.some(x=>!x)||solved) return;
+  const ok=place.every((x,p)=>x[0]===L.sol[p][0]&&x[1]===L.sol[p][1]);
+  if(!ok){ if(!conflicts().size) status("Todos posicionados, mas algum depoimento não bate. Revise!",true); return; }
+  const acc=$("accList"); acc.innerHTML=""; $("accMsg").textContent="";
+  P.forEach((pp,p)=>{ if(pp.victim) return;
+    const b=document.createElement("button"); b.className="chip";
+    b.innerHTML=`<span class="dot" style="background:${pp.c}">${pp.svg}</span>${pp.full}`;
+    b.onclick=()=>accuse(p,b); acc.appendChild(b); });
+  setTimeout(()=>$("mAccuse").classList.add("on"),380);
+}
+function accuse(p,btn){
+  if(p!==L.culprit){ wrongAcc++; btn.classList.add("no");
+    $("accMsg").textContent=`${P[p].full} tem álibi. Quem estava no mesmo cômodo que a vítima?`; $("accMsg").className="status err"; return; }
+  $("mAccuse").classList.remove("on"); solved=true; persist();
+  store.best ||= {}; if(!store.best[key(L)]||secs<store.best[key(L)]) store.best[key(L)]=secs;
+  store.done[key(L)] = (hints? true : (store.done[key(L)]==="star"?"star":"star")); if(hints && store.done[key(L)]!=="star") store.done[key(L)]=true; save();
+  const rm=L.rooms[L.room[L.sol[0][0]][L.sol[0][1]]];
+  $("wPill").className="pill "+L.d; $("wPill").textContent=capLabel(L);
+  $("wDot").style.background=P[p].c; $("wDot").innerHTML=P[p].svg;
+  $("wName").textContent=P[p].full;
+  $("wWhere").textContent=`Estava ${rm[1]} ${rm[0]}, a sós com ${P[0].full}.`;
+  $("wText").textContent=L.e;
+  $("wHints").textContent = `Tempo: ${fmt(secs)} · ` + (hints ? `${hints} dica${hints>1?"s":""}.` : "sem nenhuma dica. Brilhante! ⭐");
+  const S=SEASONS[L.temp]; $("wCont").style.background=S.cor;
+  const finale = L.cap===9;
+  $("wContT").textContent = finale ? (L.temp<SEASONS.length-1 ? `Fim da temporada ${L.temp+1}! Próxima: ${SEASONS[L.temp+1].t}` : "Fim da série!") : "Continua…";
+  $("wG").textContent=L.g;
+  const nx=nextIndex(); $("winNext").classList.toggle("hidden",nx<0);
+  $("winNext").textContent = finale ? "Próxima temporada →" : "Próximo capítulo →";
+  $("mWin").classList.add("on"); confetti();
+}
+function nextIndex(){ return li+1<CASES.length ? li+1 : -1; }
+function confetti(){
+  const c=$("conf"); c.innerHTML="";
+  for(let i=0;i<70;i++){ const e=document.createElement("i");
+    e.style.left=Math.random()*100+"%"; e.style.background=PCOL[i%PCOL.length];
+    e.style.animationDuration=(1.6+Math.random()*1.6)+"s"; e.style.animationDelay=(Math.random()*.4)+"s";
+    c.appendChild(e); }
+  setTimeout(()=>c.innerHTML="",3600);
+}
+function setMode(m){ mode=m; document.querySelectorAll(".tools2 [data-mode]").forEach(b=>b.classList.toggle("on",b.dataset.mode===m)); }
+document.querySelectorAll(".tools2 [data-mode]").forEach(b=>b.onclick=()=>{ setMode(b.dataset.mode); render(); });
+$("undo").onclick=()=>{ const h=hist.pop(); if(!h) return; const o=JSON.parse(h); place=o.place; marks=o.marks; notes=o.notes; persist(); render(); };
+$("zoom").onclick=()=>{ $("boardwrap").classList.toggle("z"); };
+$("hint").onclick=()=>{
+  let p=place.findIndex((x,q)=>x&&(x[0]!==L.sol[q][0]||x[1]!==L.sol[q][1]));
+  if(p<0) p=place.findIndex(x=>!x);
+  if(p<0) return;
+  const [r,c]=L.sol[p];
+  const occ=place.findIndex(x=>x&&x[0]===r&&x[1]===c); if(occ>=0) place[occ]=null;
+  snap(); place[p]=[r,c]; delete marks[r+","+c]; delete notes[r+","+c]; hints++; persist(); render();
+  $("cells").children[r*L.n+c].classList.add("hint");
+  status(`Dica: ${P[p].full} estava aqui.`); check();
+};
+$("reset").onclick=()=>{ snap(); place=Array(L.n).fill(null); marks={}; notes={}; struck={}; hints=0; secs=0; solved=false; sel=0; persist(); renderClues(); render(); showTime(); };
+$("back").onclick=()=>{ persist(); showMenu(); };
+$("storyBtn").onclick=openStory;
+$("winMenu").onclick=()=>{ $("mWin").classList.remove("on"); store.view="s"; store.season=L.temp; save(); showMenu(); };
+$("winNext").onclick=()=>{ $("mWin").classList.remove("on"); setup(nextIndex()); };
+const openRules=()=>$("mRules").classList.add("on");
+$("rulesBtn").onclick=openRules; $("rulesBtn2").onclick=openRules;
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("on"));
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{ if(e.target===m&&m.id!=="mWin"&&m.id!=="mAccuse") m.classList.remove("on"); }));
+
+function caseRow(c,i,label,lead){
+  const done=store.done[key(c)], st=store.state[key(c)], started=st&&st.place.some(Boolean), ok=unlocked(c);
+  const b=document.createElement("button"); b.className="case"+(done?" done":"")+(ok?"":" locked");
+  const star = done && store.done[key(c)]==="star" ? " ⭐" : "";
+  b.innerHTML=`${lead}<span class="tx"><b>${c.t}</b><small>${label} · <span class="pill ${c.d}" style="font-size:10px;padding:1px 7px">${DIFF[c.d]}</span> · ${c.n}×${c.n}</small></span><span class="st">${!ok?"🔒":done?"✓"+star:started?"…":""}</span>`;
+  b.onclick=()=>{ if(ok) setup(i); else status2(c); };
+  return b;
+}
+function status2(c){ const m=$("lockMsg"); if(m) m.remove(); }
+function showMenu(){
+  $("game").classList.add("hidden"); $("menu").classList.remove("hidden");
+  const v=store.view||"s";
+  $("vSeasons").classList.toggle("on",v!=="d"); $("vDiff").classList.toggle("on",v==="d");
+  $("seasonList").classList.toggle("hidden",v!=="s"); $("seasonView").classList.toggle("hidden",v!=="sv"); $("diffView").classList.toggle("hidden",v!=="d");
+  if(v==="s"){
+    const box=$("seasonList"); box.innerHTML="";
+    SEASONS.forEach((S,t)=>{
+      const d=seasonDone(t), ok=unlockedSeason(t);
+      const b=document.createElement("button"); b.className="season"+(ok?"":" locked");
+      b.style.background=`linear-gradient(135deg, ${S.cor}, ${S.cor}cc)`;
+      b.innerHTML=`<span class="em">${S.em}</span><span class="num">Temporada ${t+1}</span><span class="nm">${S.t}</span><span class="sb">${ok?S.sub:"🔒 Termine a temporada anterior"}</span><div class="pg"><div class="bar"><i style="width:${d*10}%"></i></div>${d}/10</div>`;
+      b.onclick=()=>{ if(!ok) return; store.view="sv"; store.season=t; save(); showMenu(); };
+      box.appendChild(b);
+    });
+  } else if(v==="sv"){
+    const t=store.season||0, S=SEASONS[t];
+    $("sHead").style.background=`linear-gradient(135deg, ${S.cor}, ${S.cor}cc)`;
+    $("sHead").innerHTML=`<span class="em">${S.em}</span><span class="num" style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.85">Temporada ${t+1}</span><b>${S.t}</b><span style="opacity:.9">${S.sub} · ${seasonDone(t)}/10</span>`;
+    const list=$("capList"); list.innerHTML="";
+    CASES.forEach((c,i)=>{ if(c.temp!==t) return;
+      list.appendChild(caseRow(c,i,"Capítulo "+(c.cap+1),`<span class="num2" style="background:${unlocked(c)?S.cor:"#c9c4bb"}">${c.cap+1}</span>`)); });
+  } else {
+    const tabs=$("tabs"); tabs.innerHTML=""; store.tab ||= "F";
+    for(const d of ["F","M","D"]){
+      const all=CASES.filter(c=>c.d===d), done=all.filter(c=>store.done[key(c)]).length;
+      const b=document.createElement("button"); b.className="tab "+d+(store.tab===d?" on":"");
+      b.innerHTML=`<b>${DIFF[d]}</b><small>${done}/${all.length}</small><div class="bar"><i style="width:${done/all.length*100}%;background:var(--${d})"></i></div>`;
+      b.onclick=()=>{ store.tab=d; save(); showMenu(); };
+      tabs.appendChild(b);
+    }
+    const list=$("list"); list.innerHTML="";
+    CASES.forEach((c,i)=>{ if(c.d!==store.tab) return; const S=SEASONS[c.temp];
+      list.appendChild(caseRow(c,i,`T${c.temp+1} · Cap. ${c.cap+1}`,`<span class="em" style="background:${S.cor}22">${S.em}</span>`)); });
+    const p=document.createElement("p"); p.style.cssText="color:var(--muted);font-size:13px;text-align:center;margin-top:12px";
+    p.textContent="Os capítulos abrem em ordem, conforme você avança em cada temporada."; list.appendChild(p);
+  }
+}
+$("vSeasons").onclick=()=>{ store.view="s"; save(); showMenu(); };
+$("vDiff").onclick=()=>{ store.view="d"; save(); showMenu(); };
+$("sBack").onclick=()=>{ store.view="s"; save(); showMenu(); };
+showMenu();
+if(!store.seenRules){ store.seenRules=true; save(); openRules(); }
+</script>
+</body>
+</html>
