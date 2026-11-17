@@ -12,7 +12,7 @@ const head=`<link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">`;
 html=html.replace("</title>","</title>\n"+head);
-html=html.replace("</body>",`<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}</script>\n</body>`);
+html=html.replace("</body>",`<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));if(navigator.serviceWorker.controller){let r=0;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(!r){r=1;try{persist()}catch(e){}location.reload()}})}}</script>\n</body>`);
 fs.writeFileSync(path.join(OUT,"index.html"),html);
 fs.writeFileSync(path.join(OUT,"manifest.webmanifest"),JSON.stringify({
   name:"Quem Foi? Mistérios de lógica", short_name:"Quem Foi?", start_url:"./", scope:"./", display:"standalone",
