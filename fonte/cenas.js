@@ -51,12 +51,79 @@ const SCENE = (() => {
     if (kind==="path") return `<svg viewBox="0 0 ${w*20} ${h*20}" preserveAspectRatio="none"><rect x="${w>=h?2:w*10-4}" y="${w>=h?h*10-4:2}" width="${w>=h?w*20-4:8}" height="${w>=h?8:h*20-4}" rx="4" fill="#e9d6ae" opacity=".9"/></svg>`;
     return "";
   }
-  const FURN = {
-    planta:`<svg viewBox="0 0 40 40"><ellipse cx="20" cy="33" rx="9" ry="3" fill="#000" opacity=".15"/><path d="M13 24 L27 24 L25 33 L15 33Z" fill="#c8693b"/><rect x="12" y="22" width="16" height="4" rx="1.5" fill="#e07b45"/><g fill="#3f9b4a"><ellipse cx="20" cy="13" rx="4" ry="9"/><ellipse cx="13" cy="16" rx="3.5" ry="8" transform="rotate(-35 13 16)"/><ellipse cx="27" cy="16" rx="3.5" ry="8" transform="rotate(35 27 16)"/></g><g fill="#5cbf5f"><ellipse cx="16" cy="12" rx="2.5" ry="7" transform="rotate(-15 16 12)"/><ellipse cx="24" cy="12" rx="2.5" ry="7" transform="rotate(15 24 12)"/></g></svg>`,
-    estante:`<svg viewBox="0 0 40 40"><rect x="5" y="31" width="30" height="5" fill="#000" opacity=".15" rx="2"/><rect x="5" y="4" width="30" height="30" rx="2" fill="#8a5a36"/><rect x="7" y="6" width="26" height="8" fill="#5e3b22"/><rect x="7" y="16" width="26" height="8" fill="#5e3b22"/><rect x="7" y="26" width="26" height="6" fill="#5e3b22"/>${[["#e03131",8],["#1c7ed6",11],["#f59f00",14],["#2f9e44",17],["#7048e8",21],["#e64980",24],["#0ca678",27],["#fab005",30]].map(([c,x],k)=>`<rect x="${x}" y="${k%2?7:8}" width="2.6" height="${k%2?7:6}" fill="${c}"/><rect x="${x+ (k%3)}" y="${k%2?17:18}" width="2.6" height="${k%2?7:6}" fill="${["#1c7ed6","#e03131","#2f9e44","#fab005"][k%4]}"/>`).join("")}</svg>`,
-    piano:`<svg viewBox="0 0 40 40"><ellipse cx="20" cy="34" rx="15" ry="3" fill="#000" opacity=".15"/><path d="M6 8 L34 8 L34 20 Q34 34 20 33 Q10 33 8 24 Q6 18 6 8Z" fill="#1d1d22"/><path d="M9 11 L31 11 L31 20 Q31 30 20 30 Q12 30 10.5 23 Q9 18 9 11Z" fill="#34343c"/><rect x="6" y="4" width="28" height="5" fill="#fff" stroke="#1d1d22" stroke-width="1"/>${[...Array(9)].map((_,k)=>`<rect x="${8+k*2.8}" y="4" width="1.4" height="3" fill="#1d1d22"/>`).join("")}<path d="M13 14 Q22 12 28 18" stroke="#fff" stroke-opacity=".25" stroke-width="1.5" fill="none"/></svg>`,
-    mesa:`<svg viewBox="0 0 40 40"><ellipse cx="20" cy="34" rx="14" ry="2.6" fill="#000" opacity=".15"/><rect x="9" y="22" width="3" height="11" rx="1" fill="#7a4a24"/><rect x="28" y="22" width="3" height="11" rx="1" fill="#7a4a24"/><rect x="5" y="9" width="30" height="15" rx="3" fill="#a96a35"/><rect x="5" y="9" width="30" height="11" rx="3" fill="#c98243"/><path d="M8 13 H32 M8 16.5 H32" stroke="#a96a35" stroke-width=".8" opacity=".6"/><circle cx="20" cy="14.5" r="3" fill="#fff" opacity=".85"/><circle cx="20" cy="14.5" r="1.6" fill="#ffd43b"/></svg>`,
-    cadeira:`<svg viewBox="0 0 40 40"><ellipse cx="20" cy="33" rx="10" ry="2.5" fill="#000" opacity=".12"/><rect x="11" y="8" width="18" height="5" rx="2" fill="#a0602f"/><rect x="11" y="14" width="18" height="16" rx="3" fill="#c98243"/><rect x="13" y="16" width="14" height="12" rx="2" fill="#e05d5d"/><rect x="12" y="13" width="2.5" height="5" fill="#a0602f"/><rect x="25.5" y="13" width="2.5" height="5" fill="#a0602f"/></svg>`
-  };
+  const FURN = (() => {
+  const O = "#3a2618";                 // cor do contorno
+  const S = `stroke="${O}" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"`;
+  const shadow = (cx, cy, rx, ry) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#000" opacity=".16"/>`;
+
+  const planta = `<svg viewBox="0 0 40 40">${shadow(20,35.5,9,2.2)}
+    <g ${S}>
+      <path d="M20 23 C14 20 8 21 6 16 C11 14 17 16 20 23Z" fill="#4f9d3a"/>
+      <path d="M20 23 C26 20 32 21 34 16 C29 14 23 16 20 23Z" fill="#4f9d3a"/>
+      <path d="M20 23 C15 17 12 11 14 5 C19 8 21 15 20 23Z" fill="#6cbf4a"/>
+      <path d="M20 23 C25 17 28 11 26 5 C21 8 19 15 20 23Z" fill="#5aae40"/>
+      <path d="M20 23 C18 16 19 9 20 4 C22 9 22 16 20 23Z" fill="#7fd05a"/>
+    </g>
+    <g stroke="#2f6b22" stroke-width=".7" fill="none" opacity=".8" stroke-linecap="round">
+      <path d="M20 22 L9 16.5"/><path d="M20 22 L31 16.5"/><path d="M20 22 L15 7"/><path d="M20 22 L25 7"/>
+    </g>
+    <path d="M12.5 24 H27.5 L25.5 35 H14.5Z" fill="#c8693b" ${S}/>
+    <rect x="11" y="22" width="18" height="4.2" rx="1.4" fill="#e0844f" ${S}/>
+    <path d="M15.5 27.5 L16.4 33.5" stroke="#fff" stroke-opacity=".35" stroke-width="1.3" stroke-linecap="round"/>
+  </svg>`;
+
+  const books = [["#d9534f",0,1],["#3f7fd1",3,0],["#e8b23a",6,2],["#4aa36b",9,0],["#8a63c9",12,1],["#e2725b",15,0],["#2f9e9a",18,2]];
+  const row = (y,h,shift) => books.map(([c,x,d],k)=>{ const col = books[(k+shift)%books.length][0]; const hh=h-((d+shift)%3);
+    return `<rect x="${8.5+x}" y="${y+h-hh}" width="2.6" height="${hh}" rx=".4" fill="${col}" stroke="${O}" stroke-width=".6"/>`; }).join("");
+  const estante = `<svg viewBox="0 0 40 40">${shadow(20,36,15,2)}
+    <rect x="5.5" y="3.5" width="29" height="31" rx="1.8" fill="#9a643a" ${S}/>
+    <rect x="8" y="6" width="24" height="7.5" fill="#5f3b22"/>
+    <rect x="8" y="15.5" width="24" height="7.5" fill="#5f3b22"/>
+    <rect x="8" y="25" width="24" height="7" fill="#5f3b22"/>
+    ${row(6.5,7,0)}${row(16,7,3)}
+    <rect x="9" y="28.4" width="5" height="3.6" rx=".5" fill="#e8b23a" stroke="${O}" stroke-width=".6"/>
+    <rect x="10" y="26.2" width="4" height="2.2" rx=".5" fill="#d9534f" stroke="${O}" stroke-width=".6"/>
+    <circle cx="26" cy="29.5" r="2.4" fill="#f3efe6" stroke="${O}" stroke-width=".6"/>
+    <rect x="5.5" y="3.5" width="29" height="31" rx="1.8" fill="none" ${S}/>
+    <path d="M7 4.6 H33" stroke="#fff" stroke-opacity=".3" stroke-width="1"/>
+  </svg>`;
+
+  const keys = [...Array(10)].map((_,k)=>`<rect x="${8.5+k*2.3}" y="29" width="2.3" height="5" fill="#fff" stroke="${O}" stroke-width=".45"/>`).join("")
+    + [0,1,3,4,5,7,8].map(k=>`<rect x="${10.1+k*2.3}" y="29" width="1.3" height="3" fill="#222"/>`).join("");
+  const piano = `<svg viewBox="0 0 40 40">${shadow(20,36.5,15,2)}
+    <path d="M7 29 V12 C7 6 12 3.5 18 3.5 C25 3.5 27 8 29 11 C31 14 33 15 33 19 V29Z" fill="#26262e" ${S}/>
+    <path d="M10 27 V13 C10 8.5 13.5 6.5 18 6.5 C23 6.5 24.5 9.5 26.5 12.5 C28 15 30 16 30 19.5 V27Z" fill="#3a3a46"/>
+    <path d="M12 12 C13 9 15.5 8.2 18.5 8.4" stroke="#fff" stroke-opacity=".35" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <rect x="7" y="27.5" width="26" height="2" fill="#1b1b22" ${S}/>
+    ${keys}
+    <rect x="8.5" y="29" width="23" height="5" fill="none" stroke="${O}" stroke-width="1"/>
+  </svg>`;
+
+  const mesa = `<svg viewBox="0 0 40 40">${shadow(20,35.5,14,2)}
+    <rect x="9" y="20" width="3.4" height="14" rx="1" fill="#7a4a26" ${S}/>
+    <rect x="27.6" y="20" width="3.4" height="14" rx="1" fill="#7a4a26" ${S}/>
+    <rect x="5" y="18" width="30" height="5" rx="1.2" fill="#8f5a2e" ${S}/>
+    <rect x="5" y="7" width="30" height="13" rx="2" fill="#c8874a" ${S}/>
+    <path d="M7 11.4 H33 M7 15.6 H33" stroke="#9b6233" stroke-width=".8"/>
+    <path d="M8 9 H24" stroke="#fff" stroke-opacity=".4" stroke-width="1.1" stroke-linecap="round"/>
+  </svg>`;
+
+  const cadeira = `<svg viewBox="0 0 40 40">${shadow(20,35.5,10,1.8)}
+    <rect x="11" y="24" width="2.6" height="10.5" rx=".8" fill="#7a4a26" ${S}/>
+    <rect x="26.4" y="24" width="2.6" height="10.5" rx=".8" fill="#7a4a26" ${S}/>
+    <rect x="11" y="5" width="2.8" height="20" rx=".8" fill="#9a5f30" ${S}/>
+    <rect x="26.2" y="5" width="2.8" height="20" rx=".8" fill="#9a5f30" ${S}/>
+    <rect x="10" y="4" width="20" height="5" rx="1.6" fill="#b8763d" ${S}/>
+    <path d="M17 9 V19 M20 9 V19 M23 9 V19" stroke="${O}" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M17 9 V19 M20 9 V19 M23 9 V19" stroke="#b8763d" stroke-width=".6" stroke-linecap="round"/>
+    <rect x="9" y="19.5" width="22" height="5.5" rx="1.6" fill="#c8874a" ${S}/>
+    <path d="M11.5 21.2 H25" stroke="#fff" stroke-opacity=".4" stroke-width="1" stroke-linecap="round"/>
+    <path d="M12 5.8 H24" stroke="#fff" stroke-opacity=".35" stroke-width="1" stroke-linecap="round"/>
+  </svg>`;
+
+  const clean = s => s.replace(/\s*\n\s*/g, "");
+  return { planta: clean(planta), estante: clean(estante), piano: clean(piano), mesa: clean(mesa), cadeira: clean(cadeira) };
+})();
+
   return { T, R, rugSVG, FURN };
 })();

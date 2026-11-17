@@ -87,7 +87,7 @@ h1{font-size:34px;line-height:1;margin:0;font-weight:800;letter-spacing:-.5px}
 .fl.wt.bl{box-shadow:inset 0 8px 7px -5px rgba(0,0,0,.3), inset 7px 0 6px -5px rgba(0,0,0,.22)}
 .fl.wl{box-shadow:inset 7px 0 6px -5px rgba(0,0,0,.22)}
 .fl.wt.wl{box-shadow:inset 0 8px 7px -5px rgba(0,0,0,.3), inset 7px 0 6px -5px rgba(0,0,0,.22)}
-.furn{width:88%;height:88%;pointer-events:none}
+.furn{width:74%;height:74%;max-width:54px;max-height:54px;pointer-events:none}
 .furn svg{width:100%;height:100%;display:block}
 .fav{display:inline-block;width:1.25em;height:1.25em;border-radius:50%;overflow:hidden;vertical-align:-.28em;margin-right:3px}
 .fav svg{width:100%;height:100%;display:block}
@@ -96,6 +96,7 @@ h1{font-size:34px;line-height:1;margin:0;font-weight:800;letter-spacing:-.5px}
 .cell:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 .5px rgba(42,47,63,.10);pointer-events:none}
 .lbl{position:absolute;top:3px;left:3px;font-size:8.5px;line-height:1.15;font-weight:800;color:#2a2f3f;background:rgba(255,255,255,.85);border-radius:5px;padding:1px 4px;max-width:calc(100% - 6px);pointer-events:none;z-index:3;text-transform:uppercase;letter-spacing:.3px;overflow:hidden;text-overflow:ellipsis}
 .lbl.one{white-space:normal}
+.board.bigb .furn{width:86%;height:86%}.board.bigb .av{width:74%;box-shadow:0 1px 2px rgba(0,0,0,.25),0 0 0 1.2px #fff}
 .board.bigb .lbl{font-size:7px;padding:0 3px;top:2px;left:2px}
 .lbl.vert{writing-mode:vertical-rl;white-space:nowrap;top:5px;left:3px}
 .obj{font-size:min(6.2vw,29px);line-height:1;pointer-events:none;filter:saturate(.9)}
@@ -103,11 +104,11 @@ h1{font-size:34px;line-height:1;margin:0;font-weight:800;letter-spacing:-.5px}
 .chair{pointer-events:none}
 .cell.hasp .chair{opacity:.9}
 .x{font-size:min(5.5vw,24px);font-weight:700;color:rgba(31,36,51,.28);pointer-events:none}
-.av{width:80%;aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,.28),0 0 0 2.5px #fff;position:relative;z-index:1;animation:pop .18s ease-out}
+.av{width:60%;max-width:46px;aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 2px 3px rgba(0,0,0,.25),0 0 0 1.5px #fff;position:relative;z-index:1;animation:pop .18s ease-out}
 .av svg,.dot svg{width:100%;height:100%;display:block}
-.av.vic{box-shadow:0 4px 6px rgba(0,0,0,.28),0 0 0 2.5px #fff,0 0 0 4.5px #e03131}
+.av.vic{box-shadow:0 2px 3px rgba(0,0,0,.25),0 0 0 1.5px #fff,0 0 0 3px #e03131}
 @keyframes pop{from{transform:scale(.4)}to{transform:scale(1)}}
-.cell.bad .av{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--D);animation:shake .3s 2}
+.cell.bad .av{box-shadow:0 0 0 1.5px #fff,0 0 0 3.5px var(--D);animation:shake .3s 2}
 .cell.hint{animation:glow 1.1s 2}
 @keyframes glow{50%{box-shadow:inset 0 0 0 5px #ffd43b}}
 @keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
@@ -479,7 +480,7 @@ function render(){
     const o=L.obj[r][c];
     if(BLOCK.has(o)) h+=`<div class="furn">${SCENE.FURN[o]}</div>`;
     const p=who[r+","+c];
-    if(o==="cadeira") h+=`<div class="furn chair" style="position:absolute;inset:6%;width:auto;height:auto">${SCENE.FURN.cadeira}</div>`;
+    if(o==="cadeira") h+=`<div class="furn chair" style="position:absolute;inset:0;margin:auto">${SCENE.FURN.cadeira}</div>`;
     if(p!==undefined){ cls.push("hasp"); if(bad.has(p)) cls.push("bad");
       h+=`<div class="av${P[p].victim?" vic":""}" style="background:${P[p].c}">${P[p].svg}</div>`; }
     else if(marks[r+","+c]) h+=`<span class="x">✕</span>`;
