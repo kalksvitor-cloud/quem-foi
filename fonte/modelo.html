@@ -247,6 +247,7 @@ h3.sec{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--m
   <ul>
     <li>Cada <b>linha</b> e cada <b>coluna</b> tem exatamente <b>uma pessoa</b>.</li>
     <li>Ninguém fica sobre planta, estante, piano ou mesa. Na cadeira pode, e a pessoa fica sentada.</li>
+    <li>O desenho muda com o cenário: vaso, arbusto, árvore, cacto e palmeira são <b>plantas</b>; estantes podem guardar livros, vinhos, potes ou caixas; mesas podem ser redondas, escrivaninhas ou bancadas; poltronas, banquinhos, bancos e espreguiçadeiras contam como <b>cadeira</b>. Tapetes são só decoração.</li>
     <li>“Ao lado de” é vizinho na horizontal ou vertical, nunca na diagonal.</li>
     <li>“Mais à esquerda” e “mais acima” valem para qualquer distância.</li>
     <li>As linhas grossas são as paredes dos cômodos. A “parede externa” é a borda da planta.</li>
@@ -478,9 +479,9 @@ function render(){
     let h="";
     const lb=lab[rm]; if(lb.r===r&&lb.c===c){ h+= lb.v ? `<div class="lbl vert" style="height:calc(${lb.v*100}% - 10px)">${L.rooms[rm][0]}</div>` : `<div class="lbl${lb.run>1?" one":""}" style="max-width:calc(${lb.run*100}% - 6px)">${L.rooms[rm][0]}</div>`; }
     const o=L.obj[r][c];
-    if(BLOCK.has(o)) h+=`<div class="furn">${SCENE.FURN[o]}</div>`;
+    if(BLOCK.has(o)) h+=`<div class="furn">${SCENE.FURN.forRoom(o,L.rooms[rm][0])}</div>`;
     const p=who[r+","+c];
-    if(o==="cadeira") h+=`<div class="furn chair" style="position:absolute;inset:0;margin:auto">${SCENE.FURN.cadeira}</div>`;
+    if(o==="cadeira") h+=`<div class="furn chair" style="position:absolute;inset:0;margin:auto">${SCENE.FURN.forRoom("cadeira",L.rooms[rm][0])}</div>`;
     if(p!==undefined){ cls.push("hasp"); if(bad.has(p)) cls.push("bad");
       h+=`<div class="av${P[p].victim?" vic":""}" style="background:${P[p].c}">${P[p].svg}</div>`; }
     else if(marks[r+","+c]) h+=`<span class="x">✕</span>`;

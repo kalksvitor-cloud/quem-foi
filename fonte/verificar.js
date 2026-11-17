@@ -44,6 +44,7 @@ function check(lv){
   const culpritOk = !lv.people[lv.culprit].victim && rm(...lv.sol[lv.culprit])===vr && lv.sol.filter((s,p)=>p>0&&rm(...s)===vr).length===1;
   return {count,match,culpritOk};
 }
-L.forEach(lv=>{ const t=Date.now(); const {count,match,culpritOk}=check(lv); const good=count===1&&match&&culpritOk; if(!good) allOk=false;
+const ONLY=process.env.ONLY?process.env.ONLY.split(",").map(Number):null;
+L.forEach((lv,ix)=>{ if(ONLY&&!ONLY.includes(ix)) return; const t=Date.now(); const {count,match,culpritOk}=check(lv); const good=count===1&&match&&culpritOk; if(!good) allOk=false;
   console.log(`T${lv.temp+1}C${lv.cap+1} ${lv.n}x${lv.n} ${lv.t}: soluções=${count>1?"2+":count} confere=${match} culpado=${culpritOk} ${good?"OK":"FALHA"} (${Date.now()-t}ms)`); });
 console.log(allOk?"TODOS OS CASOS OK":"HÁ FALHAS"); process.exit(allOk?0:1);
